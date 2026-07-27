@@ -18,12 +18,20 @@
   const pizzaGallery = document.querySelector('.pizza-gallery');
   if (!pizzaGallery) return;
 
+  const fullPizzaPortfolio = [
+    {src:'assets/img/galeria/pizza-no-forno.jpg', title:'Pizza assada no forno'},
+    {src:'assets/img/galeria/pizza-vegetariana.jpg', title:'Pizza vegetariana artesanal'},
+    {src:'assets/img/galeria/pizza-frango.jpg', title:'Pizza de frango com queijo'},
+    {src:'assets/img/pizzas/pizza-quatro-queijos.jpg', title:'Pizza de quatro queijos'},
+    {src:'assets/img/pizzas/pizza-tomate-e-queijo.jpg', title:'Pizza de tomate e queijo'}
+  ];
+
   const setupPizzaPortfolio = () => {
-    const cards = [...pizzaGallery.querySelectorAll('.pizza-photo')];
-    if (!cards.length || pizzaGallery.dataset.compactReady === 'true') return;
+    const previewCards = [...pizzaGallery.querySelectorAll('.pizza-photo')];
+    if (!previewCards.length || pizzaGallery.dataset.compactReady === 'true') return;
     pizzaGallery.dataset.compactReady = 'true';
 
-    cards.forEach((card, index) => {
+    previewCards.forEach((card, index) => {
       card.classList.toggle('pizza-preview-hidden', index >= 3);
     });
 
@@ -48,11 +56,11 @@
     document.body.appendChild(modal);
 
     const grid = modal.querySelector('.pizza-portfolio-grid');
-    grid.innerHTML = cards.map((card, index) => {
-      const img = card.querySelector('img');
-      const caption = card.querySelector('figcaption')?.textContent || img?.alt || 'Pizza artesanal';
-      return `<button class="pizza-portfolio-card" type="button" data-pizza-index="${index}" aria-label="Abrir ${caption}"><img src="${img?.getAttribute('src') || ''}" alt="${img?.alt || caption}" loading="lazy"><span>${caption}</span></button>`;
-    }).join('');
+    grid.innerHTML = fullPizzaPortfolio.map((item, index) => `
+      <button class="pizza-portfolio-card" type="button" data-pizza-index="${index}" aria-label="Abrir ${item.title}">
+        <img src="${item.src}" alt="${item.title}" loading="lazy">
+        <span>${item.title}</span>
+      </button>`).join('');
 
     const close = () => {
       modal.classList.remove('open');
@@ -67,13 +75,28 @@
     actions.querySelector('.pizza-see-more')?.addEventListener('click', open);
     modal.querySelector('.pizza-portfolio-close')?.addEventListener('click', close);
     modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
+
     modal.querySelectorAll('.pizza-portfolio-card').forEach((button) => {
       button.addEventListener('click', () => {
         const index = Number(button.dataset.pizzaIndex || 0);
         close();
-        cards[index]?.click();
+        const matchingPreviewCard = previewCards[index];
+        if (matchingPreviewCard) {
+          matchingPreviewCard.click();
+          return;
+        }
+        const item = fullPizzaPortfolio[index];
+        const lightbox = document.querySelector('#gallery-lightbox');
+        if (!item || !lightbox) return;
+        const image = lightbox.querySelector('.lightbox-image');
+        const caption = lightbox.querySelector('.lightbox-caption');
+        if (image) { image.src = item.src; image.alt = item.title; }
+        if (caption) caption.textContent = `${item.title} — Eventos de Pizzas`;
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
       });
     });
+
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && modal.classList.contains('open')) close();
     });
