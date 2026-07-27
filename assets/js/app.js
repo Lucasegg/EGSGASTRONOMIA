@@ -1,6 +1,11 @@
 (() => {
   'use strict';
 
+  const carouselCss = document.createElement('link');
+  carouselCss.rel = 'stylesheet';
+  carouselCss.href = 'assets/css/carousels.css?v=20260727-1';
+  document.head.appendChild(carouselCss);
+
   const menuButton = document.querySelector('.menu');
   const links = document.querySelector('.links');
   const form = document.querySelector('#orcamento-form');
@@ -17,6 +22,51 @@
         menuButton.setAttribute('aria-expanded', 'false');
       });
     });
+  }
+
+  const cuisineSection = document.querySelector('#culinarias .grid');
+  if (cuisineSection) {
+    const cuisines = [
+      {
+        title: 'Brasileira', icon: '🇧🇷', prefix: 'br',
+        dishes: [['🍛', 'Feijoada e acompanhamentos'], ['🥘', 'Moqueca brasileira'], ['🍖', 'Carnes e sabores regionais']]
+      },
+      {
+        title: 'Italiana', icon: '🇮🇹', prefix: 'it',
+        dishes: [['🍝', 'Massas artesanais'], ['🍕', 'Clássicos italianos'], ['🍚', 'Risotos cremosos']]
+      },
+      {
+        title: 'Francesa', icon: '🇫🇷', prefix: 'fr',
+        dishes: [['🥐', 'Panificação e entradas'], ['🍲', 'Pratos clássicos franceses'], ['🍮', 'Sobremesas refinadas']]
+      },
+      {
+        title: 'Vegetariana', icon: '🥗', prefix: 'veg',
+        dishes: [['🥗', 'Saladas completas'], ['🥙', 'Pratos leves e criativos'], ['🍲', 'Preparos quentes vegetarianos']]
+      },
+      {
+        title: 'Personalizada', icon: '✨', prefix: 'personal',
+        dishes: [['🍽️', 'Menu exclusivo'], ['🥂', 'Experiência para celebrações'], ['👨‍🍳', 'Criação sob medida']]
+      }
+    ];
+
+    cuisineSection.className = 'cuisine-galleries';
+    cuisineSection.innerHTML = cuisines.map((cuisine, cuisineIndex) => `
+      <section class="cuisine-carousel" aria-labelledby="cuisine-${cuisineIndex}">
+        <div class="carousel-heading">
+          <div class="carousel-title"><span class="icon" aria-hidden="true">${cuisine.icon}</span><h3 id="cuisine-${cuisineIndex}">${cuisine.title}</h3></div>
+          <div class="carousel-controls" aria-label="Controles do carrossel ${cuisine.title}">
+            <button class="carousel-button carousel-prev" type="button" aria-label="Imagens anteriores">‹</button>
+            <button class="carousel-button carousel-next" type="button" aria-label="Próximas imagens">›</button>
+          </div>
+        </div>
+        <div class="carousel-track" tabindex="0" aria-label="Galeria ${cuisine.title}">
+          ${cuisine.dishes.map((dish, index) => `
+            <figure class="dish-card">
+              <div class="dish-visual dish-${cuisine.prefix}-${index + 1}" role="img" aria-label="${dish[1]}"><span aria-hidden="true">${dish[0]}</span></div>
+              <figcaption>${dish[1]}</figcaption>
+            </figure>`).join('')}
+        </div>
+      </section>`).join('');
   }
 
   document.querySelectorAll('.cuisine-carousel').forEach((carousel) => {
@@ -42,18 +92,15 @@
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-
     const startedAt = Number(form.dataset.startedAt || Date.now());
     const elapsed = Date.now() - startedAt;
     const honeypot = form.querySelector('#website');
-
     if ((honeypot && honeypot.value) || elapsed < 1200) return;
 
     const nome = safeText(document.querySelector('#nome')?.value, 80);
     const telefone = safeText(document.querySelector('#telefone')?.value, 30);
     const tipo = safeText(document.querySelector('#evento')?.value, 60);
     const detalhes = safeText(document.querySelector('#mensagem')?.value, 600);
-
     if (!nome || !telefone || !tipo) return;
 
     const mensagem = [
