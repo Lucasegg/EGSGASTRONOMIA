@@ -3,7 +3,7 @@
 
   const carouselCss = document.createElement('link');
   carouselCss.rel = 'stylesheet';
-  carouselCss.href = 'assets/css/carousels.css?v=20260727-2';
+  carouselCss.href = 'assets/css/carousels.css?v=20260727-3';
   document.head.appendChild(carouselCss);
 
   const menuButton = document.querySelector('.menu');
