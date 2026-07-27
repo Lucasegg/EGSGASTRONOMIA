@@ -77,6 +77,122 @@
     carousel.querySelector('.carousel-next')?.addEventListener('click', () => track.scrollBy({left:Math.max(track.clientWidth*.85,260),behavior:'smooth'}));
   });
 
+  const galleryItems = [
+    ['buffet-ingredientes.jpg','Buffet','Ingredientes e acompanhamentos para buffet'],
+    ['entrada-gourmet.jpg','Pratos autorais','Entrada gourmet empanada'],
+    ['parrilla.jpg','Churrasco','Parrilla e preparo na brasa'],
+    ['marmitas-variadas.jpg','Marmitas','Marmitas variadas e equilibradas'],
+    ['buffet-completo.jpg','Buffet','Buffet completo com saladas e acompanhamentos'],
+    ['mini-burgers-gourmet.jpg','Hambúrgueres','Mini hambúrgueres gourmet'],
+    ['mesa-evento.jpg','Eventos','Mesa completa preparada para evento'],
+    ['choripan.jpg','Sanduíches','Choripan e mini sanduíches'],
+    ['mini-hamburgueres.jpg','Hambúrgueres','Mini hambúrgueres artesanais'],
+    ['rosas-de-maca.jpg','Sobremesas','Rosas de maçã com canela'],
+    ['salada-caesar.jpg','Saladas','Salada Caesar com croutons'],
+    ['pizza-vegetariana.jpg','Pizzas','Pizza vegetariana artesanal'],
+    ['torta-de-maca.jpg','Sobremesas','Torta de maçã decorada'],
+    ['pizza-no-forno.jpg','Pizzas','Pizza assada no forno'],
+    ['prato-autoral.jpg','Pratos autorais','Prato autoral com purê e cogumelos'],
+    ['pizza-frango.jpg','Pizzas','Pizza de frango com queijo'],
+    ['mesa-mini-lanches.jpg','Eventos','Mesa de mini lanches para evento'],
+    ['buffet-arroz-saladas.jpg','Buffet','Arroz, saladas e acompanhamentos']
+  ].map(([file, category, title]) => ({src:`assets/img/galeria/${file}`,category,title}));
+
+  const portfolioGrid = document.querySelector('#portfolio-grid');
+  const portfolioFilters = document.querySelector('#portfolio-filters');
+  const portfolioEmpty = document.querySelector('#portfolio-empty');
+  const portfolioMosaic = document.querySelector('#portfolio-mosaic');
+  const lightbox = document.querySelector('#gallery-lightbox');
+  let visibleItems = [...galleryItems];
+  let lightboxIndex = 0;
+
+  const escapeText = (value) => String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+
+  if (portfolioGrid && portfolioFilters) {
+    const categories = ['Todos', ...new Set(galleryItems.map((item) => item.category))];
+    portfolioFilters.innerHTML = categories.map((category, index) => `<button class="portfolio-filter${index === 0 ? ' active' : ''}" type="button" data-filter="${escapeText(category)}">${escapeText(category)}</button>`).join('');
+
+    const updateEmptyState = () => {
+      const loaded = [...portfolioGrid.querySelectorAll('.portfolio-card:not([hidden]) img')].some((img) => img.complete && img.naturalWidth > 0);
+      portfolioEmpty?.classList.toggle('visible', !loaded);
+    };
+
+    const renderGallery = (category = 'Todos') => {
+      visibleItems = category === 'Todos' ? [...galleryItems] : galleryItems.filter((item) => item.category === category);
+      portfolioGrid.innerHTML = visibleItems.map((item, index) => `<figure class="portfolio-card" data-index="${index}" tabindex="0" role="button" aria-label="Abrir ${escapeText(item.title)}"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption><strong>${escapeText(item.title)}</strong><small>${escapeText(item.category)}</small></figcaption></figure>`).join('');
+      portfolioGrid.querySelectorAll('img').forEach((img) => {
+        img.addEventListener('error', () => {
+          img.closest('.portfolio-card')?.setAttribute('hidden', '');
+          updateEmptyState();
+        });
+        img.addEventListener('load', updateEmptyState);
+      });
+      portfolioGrid.querySelectorAll('.portfolio-card').forEach((card) => {
+        const open = () => openLightbox(Number(card.dataset.index || 0));
+        card.addEventListener('click', open);
+        card.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
+      });
+      setTimeout(updateEmptyState, 500);
+    };
+
+    portfolioFilters.addEventListener('click', (event) => {
+      const button = event.target.closest('.portfolio-filter');
+      if (!button) return;
+      portfolioFilters.querySelectorAll('.portfolio-filter').forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
+      renderGallery(button.dataset.filter || 'Todos');
+    });
+
+    renderGallery();
+  }
+
+  if (portfolioMosaic) {
+    const highlights = [galleryItems[6], galleryItems[4], galleryItems[5], galleryItems[12], galleryItems[14]];
+    portfolioMosaic.innerHTML = highlights.map((item) => `<figure class="mosaic-item"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><span>${escapeText(item.title)}</span></figure>`).join('');
+    portfolioMosaic.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.closest('.mosaic-item')?.remove()));
+  }
+
+  const showLightboxItem = () => {
+    if (!lightbox || !visibleItems.length) return;
+    const item = visibleItems[lightboxIndex];
+    const image = lightbox.querySelector('.lightbox-image');
+    const caption = lightbox.querySelector('.lightbox-caption');
+    if (image) { image.src = item.src; image.alt = item.title; }
+    if (caption) caption.textContent = `${item.title} — ${item.category}`;
+  };
+
+  const openLightbox = (index) => {
+    if (!lightbox) return;
+    lightboxIndex = Math.max(0, Math.min(index, visibleItems.length - 1));
+    showLightboxItem();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    lightbox.querySelector('.lightbox-close')?.focus();
+  };
+
+  const closeLightbox = () => {
+    if (!lightbox) return;
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  const moveLightbox = (direction) => {
+    if (!visibleItems.length) return;
+    lightboxIndex = (lightboxIndex + direction + visibleItems.length) % visibleItems.length;
+    showLightboxItem();
+  };
+
+  lightbox?.querySelector('.lightbox-close')?.addEventListener('click', closeLightbox);
+  lightbox?.querySelector('.lightbox-prev')?.addEventListener('click', () => moveLightbox(-1));
+  lightbox?.querySelector('.lightbox-next')?.addEventListener('click', () => moveLightbox(1));
+  lightbox?.addEventListener('click', (event) => { if (event.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (event) => {
+    if (!lightbox?.classList.contains('open')) return;
+    if (event.key === 'Escape') closeLightbox();
+    if (event.key === 'ArrowLeft') moveLightbox(-1);
+    if (event.key === 'ArrowRight') moveLightbox(1);
+  });
+
   if (!form) return;
   const safeText = (value, maxLength) => String(value || '').replace(/[\u0000-\u001F\u007F]/g,' ').replace(/\s+/g,' ').trim().slice(0,maxLength);
   form.addEventListener('submit', (event) => {
