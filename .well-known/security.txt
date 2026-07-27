@@ -1,0 +1,5 @@
+Contact: https://github.com/Lucasegg/EGSGASTRONOMIA/security
+Policy: https://github.com/Lucasegg/EGSGASTRONOMIA/blob/main/SECURITY.md
+Preferred-Languages: pt-BR, en
+Canonical: https://lucasegg.github.io/EGSGASTRONOMIA/.well-known/security.txt
+Expires: 2027-07-27T23:59:59Z
