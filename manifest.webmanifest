@@ -1,0 +1,11 @@
+{
+  "name": "EGS Gastronomia",
+  "short_name": "EGS Gastronomia",
+  "description": "Experiências gastronômicas personalizadas para eventos e celebrações.",
+  "start_url": "/EGSGASTRONOMIA/",
+  "scope": "/EGSGASTRONOMIA/",
+  "display": "standalone",
+  "background_color": "#f7f3ec",
+  "theme_color": "#c97b3a",
+  "icons": [{"src":"favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
