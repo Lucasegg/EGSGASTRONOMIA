@@ -89,14 +89,17 @@
     ['mini-hamburgueres.jpg','Hambúrgueres','Mini hambúrgueres artesanais'],
     ['rosas-de-maca.jpg','Sobremesas','Rosas de maçã com canela'],
     ['salada-caesar.jpg','Saladas','Salada Caesar com croutons'],
-    ['pizza-vegetariana.jpg','Pizzas','Pizza vegetariana artesanal'],
     ['torta-de-maca.jpg','Sobremesas','Torta de maçã decorada'],
-    ['pizza-no-forno.jpg','Pizzas','Pizza assada no forno'],
     ['prato-autoral.jpg','Pratos autorais','Prato autoral com purê e cogumelos'],
-    ['pizza-frango.jpg','Pizzas','Pizza de frango com queijo'],
     ['mesa-mini-lanches.jpg','Eventos','Mesa de mini lanches para evento'],
     ['buffet-arroz-saladas.jpg','Buffet','Arroz, saladas e acompanhamentos']
   ].map(([file, category, title]) => ({src:`assets/img/galeria/${file}`,category,title}));
+
+  const pizzaItems = [
+    {src:'assets/img/galeria/pizza-no-forno.jpg',category:'Eventos de Pizzas',title:'Pizza assada no forno'},
+    {src:'assets/img/galeria/pizza-vegetariana.jpg',category:'Eventos de Pizzas',title:'Pizza vegetariana artesanal'},
+    {src:'assets/img/galeria/pizza-frango.jpg',category:'Eventos de Pizzas',title:'Pizza de frango com queijo'}
+  ];
 
   const portfolioGrid = document.querySelector('#portfolio-grid');
   const portfolioFilters = document.querySelector('#portfolio-filters');
@@ -147,7 +150,8 @@
   }
 
   if (portfolioMosaic) {
-    const highlights = [galleryItems[6], galleryItems[4], galleryItems[5], galleryItems[12], galleryItems[14]];
+    const preferredTitles = ['Mesa completa preparada para evento','Buffet completo com saladas e acompanhamentos','Mini hambúrgueres gourmet','Torta de maçã decorada','Prato autoral com purê e cogumelos'];
+    const highlights = preferredTitles.map((title) => galleryItems.find((item) => item.title === title)).filter(Boolean);
     portfolioMosaic.innerHTML = highlights.map((item) => `<figure class="mosaic-item"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><span>${escapeText(item.title)}</span></figure>`).join('');
     portfolioMosaic.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.closest('.mosaic-item')?.remove()));
   }
@@ -181,6 +185,20 @@
     lightboxIndex = (lightboxIndex + direction + visibleItems.length) % visibleItems.length;
     showLightboxItem();
   };
+
+  document.querySelectorAll('.pizza-photo').forEach((card, index) => {
+    const openPizza = () => {
+      visibleItems = [...pizzaItems];
+      openLightbox(index);
+    };
+    card.addEventListener('click', openPizza);
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openPizza();
+      }
+    });
+  });
 
   lightbox?.querySelector('.lightbox-close')?.addEventListener('click', closeLightbox);
   lightbox?.querySelector('.lightbox-prev')?.addEventListener('click', () => moveLightbox(-1));
