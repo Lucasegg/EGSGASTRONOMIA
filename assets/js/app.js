@@ -92,69 +92,44 @@
     ['torta-de-maca.jpg','Sobremesas','Torta de maçã decorada'],
     ['prato-autoral.jpg','Pratos autorais','Prato autoral com purê e cogumelos'],
     ['mesa-mini-lanches.jpg','Eventos','Mesa de mini lanches para evento'],
-    ['buffet-arroz-saladas.jpg','Buffet','Arroz, saladas e acompanhamentos']
+    ['buffet-arroz-saladas.jpg','Buffet','Arroz, saladas e acompanhamentos'],
+    ['pao-recheado-artesanal.jpg','Pães e salgados','Pão recheado artesanal'],
+    ['pao-recheado-fatiado.jpg','Pães e salgados','Pão recheado fatiado'],
+    ['linguicas-artesanais-embaladas.jpg','Produtos artesanais','Linguiças artesanais embaladas'],
+    ['linguicas-artesanais.jpg','Produtos artesanais','Linguiças artesanais'],
+    ['pao-doce-trancado.jpg','Pães e salgados','Pão doce trançado'],
+    ['espetinhos-recheados-preparo.jpg','Churrasco','Espetinhos recheados em preparo'],
+    ['paes-salgados-em-rosas.jpg','Pães e salgados','Pães salgados em formato de rosas'],
+    ['mesa-posta-evento.jpg','Eventos','Mesa posta para evento'],
+    ['espetinhos-recheados.jpg','Churrasco','Espetinhos recheados artesanais'],
+    ['cinnamon-rolls.jpg','Sobremesas','Cinnamon rolls'],
+    ['rosas-salgadas.jpg','Pães e salgados','Rosas salgadas assadas'],
+    ['variedade-paes-artesanais.jpg','Pães e salgados','Variedade de pães artesanais'],
+    ['mousse-de-limao-destaque.jpg','Sobremesas','Mousse de limão'],
+    ['mousse-de-chocolate.jpg','Sobremesas','Mousse de chocolate'],
+    ['file-com-risoto.jpg','Pratos autorais','Filé com risoto'],
+    ['risoto-de-cogumelos.jpg','Pratos autorais','Risoto de cogumelos'],
+    ['salmao-com-risoto.jpg','Pratos autorais','Salmão com risoto'],
+    ['mousse-de-limao-conjunto.jpg','Sobremesas','Mousses de limão']
   ].map(([file, category, title]) => ({src:`assets/img/galeria/${file}`,category,title}));
 
   const pizzaItems = [
-    {src:'assets/img/galeria/pizza-no-forno.jpg',category:'Eventos de Pizzas',title:'Pizza assada no forno'},
-    {src:'assets/img/galeria/pizza-vegetariana.jpg',category:'Eventos de Pizzas',title:'Pizza vegetariana artesanal'},
-    {src:'assets/img/galeria/pizza-frango.jpg',category:'Eventos de Pizzas',title:'Pizza de frango com queijo'}
-  ];
+    {src:'assets/img/galeria/pizza-no-forno.jpg',title:'Pizza assada no forno'},
+    {src:'assets/img/galeria/pizza-vegetariana.jpg',title:'Pizza vegetariana artesanal'},
+    {src:'assets/img/galeria/pizza-frango.jpg',title:'Pizza de frango com queijo'},
+    {src:'assets/img/pizzas/pizza-quatro-queijos.jpg',title:'Pizza de quatro queijos'},
+    {src:'assets/img/pizzas/pizza-tomate-e-queijo.jpg',title:'Pizza de tomate e queijo'}
+  ].map((item) => ({...item,category:'Eventos de Pizzas'}));
 
+  const escapeText = (value) => String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
   const portfolioGrid = document.querySelector('#portfolio-grid');
   const portfolioFilters = document.querySelector('#portfolio-filters');
   const portfolioEmpty = document.querySelector('#portfolio-empty');
   const portfolioMosaic = document.querySelector('#portfolio-mosaic');
+  const pizzaGallery = document.querySelector('.pizza-gallery');
   const lightbox = document.querySelector('#gallery-lightbox');
   let visibleItems = [...galleryItems];
   let lightboxIndex = 0;
-
-  const escapeText = (value) => String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
-
-  if (portfolioGrid && portfolioFilters) {
-    const categories = ['Todos', ...new Set(galleryItems.map((item) => item.category))];
-    portfolioFilters.innerHTML = categories.map((category, index) => `<button class="portfolio-filter${index === 0 ? ' active' : ''}" type="button" data-filter="${escapeText(category)}">${escapeText(category)}</button>`).join('');
-
-    const updateEmptyState = () => {
-      const loaded = [...portfolioGrid.querySelectorAll('.portfolio-card:not([hidden]) img')].some((img) => img.complete && img.naturalWidth > 0);
-      portfolioEmpty?.classList.toggle('visible', !loaded);
-    };
-
-    const renderGallery = (category = 'Todos') => {
-      visibleItems = category === 'Todos' ? [...galleryItems] : galleryItems.filter((item) => item.category === category);
-      portfolioGrid.innerHTML = visibleItems.map((item, index) => `<figure class="portfolio-card" data-index="${index}" tabindex="0" role="button" aria-label="Abrir ${escapeText(item.title)}"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption><strong>${escapeText(item.title)}</strong><small>${escapeText(item.category)}</small></figcaption></figure>`).join('');
-      portfolioGrid.querySelectorAll('img').forEach((img) => {
-        img.addEventListener('error', () => {
-          img.closest('.portfolio-card')?.setAttribute('hidden', '');
-          updateEmptyState();
-        });
-        img.addEventListener('load', updateEmptyState);
-      });
-      portfolioGrid.querySelectorAll('.portfolio-card').forEach((card) => {
-        const open = () => openLightbox(Number(card.dataset.index || 0));
-        card.addEventListener('click', open);
-        card.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
-      });
-      setTimeout(updateEmptyState, 500);
-    };
-
-    portfolioFilters.addEventListener('click', (event) => {
-      const button = event.target.closest('.portfolio-filter');
-      if (!button) return;
-      portfolioFilters.querySelectorAll('.portfolio-filter').forEach((item) => item.classList.remove('active'));
-      button.classList.add('active');
-      renderGallery(button.dataset.filter || 'Todos');
-    });
-
-    renderGallery();
-  }
-
-  if (portfolioMosaic) {
-    const preferredTitles = ['Mesa completa preparada para evento','Buffet completo com saladas e acompanhamentos','Mini hambúrgueres gourmet','Torta de maçã decorada','Prato autoral com purê e cogumelos'];
-    const highlights = preferredTitles.map((title) => galleryItems.find((item) => item.title === title)).filter(Boolean);
-    portfolioMosaic.innerHTML = highlights.map((item) => `<figure class="mosaic-item"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><span>${escapeText(item.title)}</span></figure>`).join('');
-    portfolioMosaic.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.closest('.mosaic-item')?.remove()));
-  }
 
   const showLightboxItem = () => {
     if (!lightbox || !visibleItems.length) return;
@@ -186,19 +161,55 @@
     showLightboxItem();
   };
 
-  document.querySelectorAll('.pizza-photo').forEach((card, index) => {
-    const openPizza = () => {
-      visibleItems = [...pizzaItems];
-      openLightbox(index);
-    };
-    card.addEventListener('click', openPizza);
-    card.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        openPizza();
-      }
+  if (pizzaGallery) {
+    pizzaGallery.innerHTML = pizzaItems.map((item, index) => `<figure class="pizza-photo" tabindex="0" role="button" data-index="${index}" aria-label="Abrir ${escapeText(item.title)}">${index === 0 ? '<span class="pizza-badge">Feita na hora</span>' : ''}<img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption>${escapeText(item.title)}</figcaption></figure>`).join('');
+    pizzaGallery.querySelectorAll('.pizza-photo').forEach((card) => {
+      const open = () => { visibleItems = [...pizzaItems]; openLightbox(Number(card.dataset.index || 0)); };
+      card.addEventListener('click', open);
+      card.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
     });
-  });
+  }
+
+  if (portfolioGrid && portfolioFilters) {
+    const categories = ['Todos', ...new Set(galleryItems.map((item) => item.category))];
+    portfolioFilters.innerHTML = categories.map((category, index) => `<button class="portfolio-filter${index === 0 ? ' active' : ''}" type="button" data-filter="${escapeText(category)}">${escapeText(category)}</button>`).join('');
+
+    const updateEmptyState = () => {
+      const loaded = [...portfolioGrid.querySelectorAll('.portfolio-card:not([hidden]) img')].some((img) => img.complete && img.naturalWidth > 0);
+      portfolioEmpty?.classList.toggle('visible', !loaded);
+    };
+
+    const renderGallery = (category = 'Todos') => {
+      visibleItems = category === 'Todos' ? [...galleryItems] : galleryItems.filter((item) => item.category === category);
+      portfolioGrid.innerHTML = visibleItems.map((item, index) => `<figure class="portfolio-card" data-index="${index}" tabindex="0" role="button" aria-label="Abrir ${escapeText(item.title)}"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption><strong>${escapeText(item.title)}</strong><small>${escapeText(item.category)}</small></figcaption></figure>`).join('');
+      portfolioGrid.querySelectorAll('img').forEach((img) => {
+        img.addEventListener('error', () => { img.closest('.portfolio-card')?.setAttribute('hidden', ''); updateEmptyState(); });
+        img.addEventListener('load', updateEmptyState);
+      });
+      portfolioGrid.querySelectorAll('.portfolio-card').forEach((card) => {
+        const open = () => openLightbox(Number(card.dataset.index || 0));
+        card.addEventListener('click', open);
+        card.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
+      });
+      setTimeout(updateEmptyState, 500);
+    };
+
+    portfolioFilters.addEventListener('click', (event) => {
+      const button = event.target.closest('.portfolio-filter');
+      if (!button) return;
+      portfolioFilters.querySelectorAll('.portfolio-filter').forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
+      renderGallery(button.dataset.filter || 'Todos');
+    });
+    renderGallery();
+  }
+
+  if (portfolioMosaic) {
+    const preferredTitles = ['Mesa posta para evento','Pão recheado artesanal','Filé com risoto','Mousse de limão','Espetinhos recheados artesanais'];
+    const highlights = preferredTitles.map((title) => galleryItems.find((item) => item.title === title)).filter(Boolean);
+    portfolioMosaic.innerHTML = highlights.map((item) => `<figure class="mosaic-item"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><span>${escapeText(item.title)}</span></figure>`).join('');
+    portfolioMosaic.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.closest('.mosaic-item')?.remove()));
+  }
 
   lightbox?.querySelector('.lightbox-close')?.addEventListener('click', closeLightbox);
   lightbox?.querySelector('.lightbox-prev')?.addEventListener('click', () => moveLightbox(-1));
