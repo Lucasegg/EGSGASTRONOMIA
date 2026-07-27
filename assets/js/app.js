@@ -134,7 +134,16 @@
     ['salada-com-queijo-empanado.jpg','Entradas e saladas','Salada com queijo empanado'],
     ['saladas-individuais.jpg','Entradas e saladas','Saladas individuais para serviço'],
     ['risoto-com-medalhao.jpg','Pratos principais','Risoto cremoso com medalhão'],
-    ['sobremesa-frutas-vermelhas-nozes.jpg','Sobremesas','Sobremesa cremosa com frutas vermelhas e nozes']
+    ['sobremesa-frutas-vermelhas-nozes.jpg','Sobremesas','Sobremesa cremosa com frutas vermelhas e nozes'],
+    ['drinks-refrescantes-evento.jpg','Drinks','Drinks refrescantes para eventos'],
+    ['mousses-frutas-vermelhas-bandeja.jpg','Sobremesas','Mousses com frutas vermelhas'],
+    ['entrada-crocante-couve.jpg','Entradas e saladas','Entrada crocante sobre cama de couve'],
+    ['canape-cebola-roxa.jpg','Finger foods','Canapé artesanal com cebola roxa'],
+    ['mousse-calda-morango.jpg','Sobremesas','Mousse com calda de morango'],
+    ['tortellini-tricolor-pomodoro.jpg','Massas artesanais','Tortellini tricolor ao molho pomodoro'],
+    ['ravioli-nero-pomodoro.jpg','Massas artesanais','Ravioli nero ao molho pomodoro'],
+    ['sunomono-pepino.jpg','Entradas e saladas','Sunomono de pepino'],
+    ['frango-oriental-amendoim.jpg','Pratos principais','Frango oriental com legumes e amendoim']
   ].map(([file, category, title]) => ({src:`assets/img/galeria/${file}`,category,title}));
 
   const pizzaItems = [
@@ -142,7 +151,12 @@
     {src:'assets/img/galeria/pizza-vegetariana.jpg',title:'Pizza vegetariana artesanal'},
     {src:'assets/img/galeria/pizza-frango.jpg',title:'Pizza de frango com queijo'},
     {src:'assets/img/pizzas/pizza-quatro-queijos.jpg',title:'Pizza de quatro queijos'},
-    {src:'assets/img/pizzas/pizza-tomate-e-queijo.jpg',title:'Pizza de tomate e queijo'}
+    {src:'assets/img/pizzas/pizza-tomate-e-queijo.jpg',title:'Pizza de tomate e queijo'},
+    {src:'assets/img/pizzas/pizza-margherita-ao-vivo.jpg',title:'Pizza Margherita finalizada ao vivo'},
+    {src:'assets/img/pizzas/pizza-parma-com-pesto.jpg',title:'Pizza de Parma com pesto'},
+    {src:'assets/img/pizzas/pizza-couve-flor-e-bacon.jpg',title:'Pizza de couve-flor e bacon'},
+    {src:'assets/img/pizzas/pizza-calabresa-artesanal.jpg',title:'Pizza artesanal de calabresa'},
+    {src:'assets/img/pizzas/pizza-tomates-confitados.jpg',title:'Pizza com tomates confitados e manjericão'}
   ].map((item) => ({...item,category:'Eventos de Pizzas'}));
 
   const escapeText = (value) => String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
@@ -183,8 +197,8 @@
   };
 
   if (pizzaGallery) {
-    const previewItems = pizzaItems.slice(0, 3);
-    pizzaGallery.innerHTML = previewItems.map((item, index) => `<figure class="pizza-photo" tabindex="0" role="button" data-index="${index}" aria-label="Abrir ${escapeText(item.title)}">${index === 0 ? '<span class="pizza-badge">Feita na hora</span>' : ''}<img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption>${escapeText(item.title)}</figcaption></figure>`).join('');
+    const previewItems = pizzaItems.slice(-3);
+    pizzaGallery.innerHTML = previewItems.map((item, index) => `<figure class="pizza-photo" tabindex="0" role="button" data-index="${pizzaItems.indexOf(item)}" aria-label="Abrir ${escapeText(item.title)}">${index === 0 ? '<span class="pizza-badge">Feita na hora</span>' : ''}<img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption>${escapeText(item.title)}</figcaption></figure>`).join('');
     pizzaGallery.querySelectorAll('.pizza-photo').forEach((card) => {
       const open = () => { visibleItems = [...pizzaItems]; openLightbox(Number(card.dataset.index || 0)); };
       card.addEventListener('click', open);
@@ -224,8 +238,9 @@
   }
 
   if (portfolioMosaic) {
-    const preferredTitles = ['Chef Eduardo Gomes em ação','Barcas de sushi e sashimi','Risoto cremoso com medalhão','Cerveja artesanal Alma Malteficada','Sobremesa cremosa com frutas vermelhas e nozes'];
-    const highlights = preferredTitles.map((title) => galleryItems.find((item) => item.title === title)).filter(Boolean);
+    const preferredTitles = ['Chef Eduardo Gomes em ação','Pizza de Parma com pesto','Tortellini tricolor ao molho pomodoro','Drinks refrescantes para eventos','Mousses com frutas vermelhas'];
+    const allItems = [...galleryItems, ...pizzaItems];
+    const highlights = preferredTitles.map((title) => allItems.find((item) => item.title === title)).filter(Boolean);
     portfolioMosaic.innerHTML = highlights.map((item) => `<figure class="mosaic-item"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><span>${escapeText(item.title)}</span></figure>`).join('');
     portfolioMosaic.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.closest('.mosaic-item')?.remove()));
   }
