@@ -56,7 +56,6 @@
         ['https://unsplash.com/photos/5HQAKnaR6YM/download?force=true&w=1200','Menu personalizado e sofisticado']
       ]}
     ];
-
     cuisineSection.className = 'cuisine-galleries';
     cuisineSection.innerHTML = cuisines.map((cuisine, cuisineIndex) => `
       <section class="cuisine-carousel" aria-labelledby="cuisine-${cuisineIndex}">
@@ -110,7 +109,22 @@
     ['file-com-risoto.jpg','Pratos autorais','Filé com risoto'],
     ['risoto-de-cogumelos.jpg','Pratos autorais','Risoto de cogumelos'],
     ['salmao-com-risoto.jpg','Pratos autorais','Salmão com risoto'],
-    ['mousse-de-limao-conjunto.jpg','Sobremesas','Mousses de limão']
+    ['rosas-salgadas-presunto-queijo.jpg','Pães e salgados','Rosas salgadas de presunto e queijo'],
+    ['mini-hamburgueres-integrais.jpg','Finger foods','Mini hambúrgueres em pão integral'],
+    ['panetone-artesanal.jpg','Panificação','Panetone artesanal'],
+    ['sanduiches-gourmet.jpg','Finger foods','Sanduíches gourmet'],
+    ['mesa-sushi-evento.jpg','Gastronomia japonesa','Mesa de sushi para evento'],
+    ['mini-hamburgueres-brioche.jpg','Finger foods','Mini hambúrgueres no brioche'],
+    ['sushi-salmao.jpg','Gastronomia japonesa','Sushi de salmão'],
+    ['paella-frutos-do-mar.jpg','Pratos principais','Paella de frutos do mar'],
+    ['mesa-japonesa-completa.jpg','Gastronomia japonesa','Mesa japonesa completa'],
+    ['carre-cordeiro-polenta.jpg','Pratos autorais','Carré de cordeiro com polenta'],
+    ['salada-colorida.jpg','Entradas e saladas','Salada colorida com legumes'],
+    ['abacaxi-grelhado-coco.jpg','Sobremesas','Abacaxi grelhado com coco'],
+    ['chef-em-acao.jpg','Chef em ação','Chef Eduardo Gomes em ação'],
+    ['arroz-doce-gourmet.jpg','Sobremesas','Arroz doce gourmet com frutas e nozes'],
+    ['creme-com-paes.jpg','Entradas e sopas','Creme servido com pães artesanais'],
+    ['frango-curry-arroz-farofa.jpg','Pratos principais','Frango ao curry com arroz e farofa']
   ].map(([file, category, title]) => ({src:`assets/img/galeria/${file}`,category,title}));
 
   const pizzaItems = [
@@ -139,7 +153,6 @@
     if (image) { image.src = item.src; image.alt = item.title; }
     if (caption) caption.textContent = `${item.title} — ${item.category}`;
   };
-
   const openLightbox = (index) => {
     if (!lightbox) return;
     lightboxIndex = Math.max(0, Math.min(index, visibleItems.length - 1));
@@ -148,13 +161,11 @@
     document.body.style.overflow = 'hidden';
     lightbox.querySelector('.lightbox-close')?.focus();
   };
-
   const closeLightbox = () => {
     if (!lightbox) return;
     lightbox.classList.remove('open');
     document.body.style.overflow = '';
   };
-
   const moveLightbox = (direction) => {
     if (!visibleItems.length) return;
     lightboxIndex = (lightboxIndex + direction + visibleItems.length) % visibleItems.length;
@@ -162,7 +173,8 @@
   };
 
   if (pizzaGallery) {
-    pizzaGallery.innerHTML = pizzaItems.map((item, index) => `<figure class="pizza-photo" tabindex="0" role="button" data-index="${index}" aria-label="Abrir ${escapeText(item.title)}">${index === 0 ? '<span class="pizza-badge">Feita na hora</span>' : ''}<img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption>${escapeText(item.title)}</figcaption></figure>`).join('');
+    const previewItems = pizzaItems.slice(0, 3);
+    pizzaGallery.innerHTML = previewItems.map((item, index) => `<figure class="pizza-photo" tabindex="0" role="button" data-index="${index}" aria-label="Abrir ${escapeText(item.title)}">${index === 0 ? '<span class="pizza-badge">Feita na hora</span>' : ''}<img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption>${escapeText(item.title)}</figcaption></figure>`).join('');
     pizzaGallery.querySelectorAll('.pizza-photo').forEach((card) => {
       const open = () => { visibleItems = [...pizzaItems]; openLightbox(Number(card.dataset.index || 0)); };
       card.addEventListener('click', open);
@@ -173,12 +185,10 @@
   if (portfolioGrid && portfolioFilters) {
     const categories = ['Todos', ...new Set(galleryItems.map((item) => item.category))];
     portfolioFilters.innerHTML = categories.map((category, index) => `<button class="portfolio-filter${index === 0 ? ' active' : ''}" type="button" data-filter="${escapeText(category)}">${escapeText(category)}</button>`).join('');
-
     const updateEmptyState = () => {
       const loaded = [...portfolioGrid.querySelectorAll('.portfolio-card:not([hidden]) img')].some((img) => img.complete && img.naturalWidth > 0);
       portfolioEmpty?.classList.toggle('visible', !loaded);
     };
-
     const renderGallery = (category = 'Todos') => {
       visibleItems = category === 'Todos' ? [...galleryItems] : galleryItems.filter((item) => item.category === category);
       portfolioGrid.innerHTML = visibleItems.map((item, index) => `<figure class="portfolio-card" data-index="${index}" tabindex="0" role="button" aria-label="Abrir ${escapeText(item.title)}"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><figcaption><strong>${escapeText(item.title)}</strong><small>${escapeText(item.category)}</small></figcaption></figure>`).join('');
@@ -193,7 +203,6 @@
       });
       setTimeout(updateEmptyState, 500);
     };
-
     portfolioFilters.addEventListener('click', (event) => {
       const button = event.target.closest('.portfolio-filter');
       if (!button) return;
@@ -205,7 +214,7 @@
   }
 
   if (portfolioMosaic) {
-    const preferredTitles = ['Mesa posta para evento','Pão recheado artesanal','Filé com risoto','Mousse de limão','Espetinhos recheados artesanais'];
+    const preferredTitles = ['Chef Eduardo Gomes em ação','Mesa japonesa completa','Paella de frutos do mar','Carré de cordeiro com polenta','Abacaxi grelhado com coco'];
     const highlights = preferredTitles.map((title) => galleryItems.find((item) => item.title === title)).filter(Boolean);
     portfolioMosaic.innerHTML = highlights.map((item) => `<figure class="mosaic-item"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><span>${escapeText(item.title)}</span></figure>`).join('');
     portfolioMosaic.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.closest('.mosaic-item')?.remove()));
