@@ -23,7 +23,12 @@
     {src:'assets/img/galeria/pizza-vegetariana.jpg', title:'Pizza vegetariana artesanal'},
     {src:'assets/img/galeria/pizza-frango.jpg', title:'Pizza de frango com queijo'},
     {src:'assets/img/pizzas/pizza-quatro-queijos.jpg', title:'Pizza de quatro queijos'},
-    {src:'assets/img/pizzas/pizza-tomate-e-queijo.jpg', title:'Pizza de tomate e queijo'}
+    {src:'assets/img/pizzas/pizza-tomate-e-queijo.jpg', title:'Pizza de tomate e queijo'},
+    {src:'assets/img/pizzas/pizza-margherita-ao-vivo.jpg', title:'Pizza Margherita finalizada ao vivo'},
+    {src:'assets/img/pizzas/pizza-parma-com-pesto.jpg', title:'Pizza de Parma com pesto'},
+    {src:'assets/img/pizzas/pizza-couve-flor-e-bacon.jpg', title:'Pizza de couve-flor e bacon'},
+    {src:'assets/img/pizzas/pizza-calabresa-artesanal.jpg', title:'Pizza artesanal de calabresa'},
+    {src:'assets/img/pizzas/pizza-tomates-confitados.jpg', title:'Pizza com tomates confitados e manjericão'}
   ];
 
   const setupPizzaPortfolio = () => {
