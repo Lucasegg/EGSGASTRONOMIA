@@ -124,7 +124,17 @@
     ['chef-em-acao.jpg','Chef em ação','Chef Eduardo Gomes em ação'],
     ['arroz-doce-gourmet.jpg','Sobremesas','Arroz doce gourmet com frutas e nozes'],
     ['creme-com-paes.jpg','Entradas e sopas','Creme servido com pães artesanais'],
-    ['frango-curry-arroz-farofa.jpg','Pratos principais','Frango ao curry com arroz e farofa']
+    ['frango-curry-arroz-farofa.jpg','Pratos principais','Frango ao curry com arroz e farofa'],
+    ['cerveja-alma-malteficada-taca.jpg','Cervejas artesanais','Cerveja artesanal Alma Malteficada'],
+    ['linha-cervejas-alma-malteficada.jpg','Cervejas artesanais','Linha de cervejas artesanais Alma Malteficada'],
+    ['barcas-de-sushi.jpg','Gastronomia japonesa','Barcas de sushi e sashimi'],
+    ['mesa-posta-decorada.jpg','Eventos','Mesa posta para evento'],
+    ['salada-com-chips.jpg','Entradas e saladas','Salada com chips de legumes'],
+    ['saladas-em-producao.jpg','Entradas e saladas','Saladas preparadas para evento'],
+    ['salada-com-queijo-empanado.jpg','Entradas e saladas','Salada com queijo empanado'],
+    ['saladas-individuais.jpg','Entradas e saladas','Saladas individuais para serviço'],
+    ['risoto-com-medalhao.jpg','Pratos principais','Risoto cremoso com medalhão'],
+    ['sobremesa-frutas-vermelhas-nozes.jpg','Sobremesas','Sobremesa cremosa com frutas vermelhas e nozes']
   ].map(([file, category, title]) => ({src:`assets/img/galeria/${file}`,category,title}));
 
   const pizzaItems = [
@@ -214,7 +224,7 @@
   }
 
   if (portfolioMosaic) {
-    const preferredTitles = ['Chef Eduardo Gomes em ação','Mesa japonesa completa','Paella de frutos do mar','Carré de cordeiro com polenta','Abacaxi grelhado com coco'];
+    const preferredTitles = ['Chef Eduardo Gomes em ação','Barcas de sushi e sashimi','Risoto cremoso com medalhão','Cerveja artesanal Alma Malteficada','Sobremesa cremosa com frutas vermelhas e nozes'];
     const highlights = preferredTitles.map((title) => galleryItems.find((item) => item.title === title)).filter(Boolean);
     portfolioMosaic.innerHTML = highlights.map((item) => `<figure class="mosaic-item"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><span>${escapeText(item.title)}</span></figure>`).join('');
     portfolioMosaic.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.closest('.mosaic-item')?.remove()));
