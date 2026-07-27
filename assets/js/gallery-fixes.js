@@ -38,31 +38,95 @@
   ];
 
   const escapeText = (value) => String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+  const lightbox = document.querySelector('#gallery-lightbox');
+  let pizzaLightboxActive = false;
+  let pizzaLightboxIndex = 0;
 
-  const openPizzaLightbox = (item) => {
-    const lightbox = document.querySelector('#gallery-lightbox');
-    if (!item || !lightbox) return;
+  const showPizzaLightboxItem = () => {
+    if (!lightbox || !fullPizzaPortfolio.length) return;
+    const item = fullPizzaPortfolio[pizzaLightboxIndex];
     const image = lightbox.querySelector('.lightbox-image');
     const caption = lightbox.querySelector('.lightbox-caption');
-    if (image) { image.src = item.src; image.alt = item.title; }
+    if (image) {
+      image.src = item.src;
+      image.alt = item.title;
+    }
     if (caption) caption.textContent = `${item.title} — Eventos de Pizzas`;
+  };
+
+  const openPizzaLightbox = (item, requestedIndex) => {
+    if (!item || !lightbox) return;
+    const resolvedIndex = Number.isInteger(requestedIndex)
+      ? requestedIndex
+      : fullPizzaPortfolio.findIndex((pizza) => pizza.src === item.src);
+    pizzaLightboxIndex = resolvedIndex >= 0 ? resolvedIndex : 0;
+    pizzaLightboxActive = true;
+    showPizzaLightboxItem();
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
+    lightbox.querySelector('.lightbox-close')?.focus();
+  };
+
+  const movePizzaLightbox = (direction) => {
+    pizzaLightboxIndex = (pizzaLightboxIndex + direction + fullPizzaPortfolio.length) % fullPizzaPortfolio.length;
+    showPizzaLightboxItem();
+  };
+
+  const setupPizzaOnlyNavigation = () => {
+    if (!lightbox || lightbox.dataset.pizzaNavigationReady === 'true') return;
+    lightbox.dataset.pizzaNavigationReady = 'true';
+
+    lightbox.querySelector('.lightbox-prev')?.addEventListener('click', (event) => {
+      if (!pizzaLightboxActive) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      movePizzaLightbox(-1);
+    }, true);
+
+    lightbox.querySelector('.lightbox-next')?.addEventListener('click', (event) => {
+      if (!pizzaLightboxActive) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      movePizzaLightbox(1);
+    }, true);
+
+    lightbox.querySelector('.lightbox-close')?.addEventListener('click', () => {
+      pizzaLightboxActive = false;
+    }, true);
+
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) pizzaLightboxActive = false;
+    }, true);
+
+    document.addEventListener('keydown', (event) => {
+      if (!pizzaLightboxActive || !lightbox.classList.contains('open')) return;
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        movePizzaLightbox(event.key === 'ArrowLeft' ? -1 : 1);
+      } else if (event.key === 'Escape') {
+        pizzaLightboxActive = false;
+      }
+    }, true);
   };
 
   const setupPizzaPortfolio = () => {
     if (pizzaGallery.dataset.compactReady === 'true') return;
     pizzaGallery.dataset.compactReady = 'true';
+    setupPizzaOnlyNavigation();
 
     pizzaGallery.innerHTML = previewPizzaPortfolio.map((item, index) => `
-      <figure class="pizza-photo" tabindex="0" role="button" data-preview-index="${index}" aria-label="Abrir ${escapeText(item.title)}">
+      <figure class="pizza-photo" tabindex="0" role="button" data-pizza-index="${fullPizzaPortfolio.indexOf(item)}" aria-label="Abrir ${escapeText(item.title)}">
         ${index === 0 ? '<span class="pizza-badge">Feita na hora</span>' : ''}
         <img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy">
         <figcaption>${escapeText(item.title)}</figcaption>
       </figure>`).join('');
 
     pizzaGallery.querySelectorAll('.pizza-photo').forEach((card) => {
-      const open = () => openPizzaLightbox(previewPizzaPortfolio[Number(card.dataset.previewIndex || 0)]);
+      const open = () => {
+        const index = Number(card.dataset.pizzaIndex || 0);
+        openPizzaLightbox(fullPizzaPortfolio[index], index);
+      };
       card.addEventListener('click', open);
       card.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' || event.key === ' ') {
@@ -118,9 +182,9 @@
 
     modal.querySelectorAll('.pizza-portfolio-card').forEach((button) => {
       button.addEventListener('click', () => {
-        const item = fullPizzaPortfolio[Number(button.dataset.pizzaIndex || 0)];
+        const index = Number(button.dataset.pizzaIndex || 0);
         close();
-        openPizzaLightbox(item);
+        openPizzaLightbox(fullPizzaPortfolio[index], index);
       });
     });
 
