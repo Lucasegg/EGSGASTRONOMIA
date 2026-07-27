@@ -19,6 +19,19 @@
     });
   }
 
+  document.querySelectorAll('.cuisine-carousel').forEach((carousel) => {
+    const track = carousel.querySelector('.carousel-track');
+    if (!track) return;
+
+    carousel.querySelector('.carousel-prev')?.addEventListener('click', () => {
+      track.scrollBy({ left: -Math.max(track.clientWidth * 0.85, 260), behavior: 'smooth' });
+    });
+
+    carousel.querySelector('.carousel-next')?.addEventListener('click', () => {
+      track.scrollBy({ left: Math.max(track.clientWidth * 0.85, 260), behavior: 'smooth' });
+    });
+  });
+
   if (!form) return;
 
   const safeText = (value, maxLength) => String(value || '')
