@@ -12,19 +12,37 @@ main > section,
 .footer{
   position:relative;
   isolation:isolate;
+  overflow:hidden;
 }
 
 main > section::before,
 .footer::before{
   content:"";
   position:absolute;
-  inset:0;
+  inset:-460px -120px 0;
   z-index:0;
   pointer-events:none;
-  background-image:url('../img/pattern-gastronomia-tom-sobre-tom.svg');
+  background-image:
+    url('../img/pattern-gastronomia-tom-sobre-tom.svg'),
+    url('../img/pattern-gastronomia-tom-sobre-tom.svg');
   background-repeat:repeat;
-  background-size:420px 420px;
-  opacity:.42;
+  background-size:420px 420px,310px 310px;
+  background-position:17px -210px,193px -85px;
+  opacity:.52;
+  animation:egs-pattern-fall 32s linear infinite;
+  will-change:background-position;
+}
+
+main > section:nth-of-type(2n)::before{
+  animation-duration:39s;
+  animation-direction:reverse;
+  background-position:143px -330px,37px -170px;
+}
+
+main > section:nth-of-type(3n)::before{
+  animation-duration:46s;
+  background-size:470px 470px,335px 335px;
+  background-position:71px -120px,251px -260px;
 }
 
 main > section > *,
@@ -33,19 +51,40 @@ main > section > *,
   z-index:1;
 }
 
-/* Em fundos escuros, o desenho permanece ainda mais discreto. */
+/* Em fundos escuros, o desenho permanece discreto. */
 main > section.dark::before,
 main > section.pizza-events::before,
 .footer::before{
-  opacity:.13;
+  opacity:.18;
   filter:grayscale(1) brightness(1.8);
+}
+
+@keyframes egs-pattern-fall{
+  from{
+    background-position:17px -420px,193px -310px;
+  }
+  to{
+    background-position:64px 420px,147px 620px;
+  }
 }
 
 /* Em telas menores, o padrão fica um pouco mais espaçado. */
 @media(max-width:700px){
-  body,
+  body{
+    background-size:360px 360px;
+  }
+
   main > section::before,
   .footer::before{
-    background-size:360px 360px;
+    background-size:360px 360px,270px 270px;
+    animation-duration:38s;
+  }
+}
+
+/* Respeita usuários que preferem menos movimento. */
+@media(prefers-reduced-motion:reduce){
+  main > section::before,
+  .footer::before{
+    animation:none;
   }
 }
