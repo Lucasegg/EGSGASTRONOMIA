@@ -105,6 +105,21 @@ main{
   color:#ffffff75;
 }
 
+#pizzas .pizza-more-area{
+  display:flex;
+  justify-content:center;
+  margin-top:1.25rem;
+}
+
+#pizzas .pizza-view-more{
+  min-width:170px;
+  border-radius:999px;
+  border:2px solid #1d140e;
+  font-weight:700;
+  letter-spacing:.08em;
+  box-shadow:0 10px 24px #00000035;
+}
+
 .nav{
   background-color:rgba(250,246,239,.94);
   backdrop-filter:blur(10px);
