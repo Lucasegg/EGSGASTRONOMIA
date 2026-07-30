@@ -2,57 +2,55 @@ html{
   background:#f8efe3;
 }
 
+/* Papel de parede único e contínuo, fixado atrás de todo o site. */
 body{
   background-color:#f8efe3;
   background-image:url('../img/gastronomic-wallpaper.svg');
   background-repeat:repeat;
-  background-size:520px 520px;
+  background-size:440px 440px;
+  background-position:center top;
   background-attachment:fixed;
 }
 
-main{position:relative;isolation:isolate}
+main{
+  position:relative;
+  isolation:isolate;
+  background:transparent;
+}
 
-/* Aplica o padrão somente nas áreas claras do site.
-   A seção de pizzas mantém integralmente o visual escuro original. */
+/* As seções claras funcionam como uma película translúcida.
+   O desenho visto é sempre o papel de parede contínuo do body. */
 .hero,
-.section:not(.dark):not(.pizza-events){
-  background-color:#fffaf3;
-  background-image:
-    linear-gradient(rgba(255,250,243,.82),rgba(255,250,243,.82)),
-    url('../img/gastronomic-wallpaper.svg');
-  background-repeat:repeat;
-  background-size:auto,520px 520px;
-  background-position:0 0;
-}
-
+.section:not(.dark):not(.pizza-events),
 .section.paper{
-  background-color:#fffdf8;
-  background-image:
-    linear-gradient(rgba(255,253,248,.86),rgba(255,253,248,.86)),
-    url('../img/gastronomic-wallpaper.svg');
-  background-repeat:repeat;
-  background-size:auto,520px 520px;
+  background-color:rgba(255,250,243,.68) !important;
+  background-image:none !important;
 }
 
-.section.dark{
-  background-color:#2b2118;
-  background-image:
-    linear-gradient(rgba(43,33,24,.93),rgba(43,33,24,.93)),
-    url('../img/gastronomic-wallpaper.svg');
-  background-repeat:repeat;
-  background-size:auto,520px 520px;
+/* Áreas escuras continuam legíveis, mas ainda deixam a marca d'água aparecer. */
+.section.dark:not(.pizza-events){
+  background-color:rgba(43,33,24,.94) !important;
+  background-image:none !important;
 }
 
-/* Proteção explícita contra alterações do papel de parede nessa seção. */
+/* Mantém o visual escuro original da seção de pizzas,
+   agora com leve transparência para o papel de parede continuar ao fundo. */
 .section.pizza-events{
-  background:#241a12;
-  background-image:none;
+  background-color:rgba(36,26,18,.96) !important;
+  background-image:none !important;
   color:#fff;
 }
 
-.nav{background-color:rgba(250,246,239,.94);backdrop-filter:blur(10px)}
-.footer{background-color:rgba(37,29,22,.98)}
+.nav{
+  background-color:rgba(250,246,239,.92);
+  backdrop-filter:blur(10px);
+}
 
+.footer{
+  background-color:rgba(37,29,22,.97);
+}
+
+/* Blocos de conteúdo permanecem limpos e destacados sobre a marca d'água. */
 .hero-card,
 .card,
 .form,
@@ -66,6 +64,7 @@ main{position:relative;isolation:isolate}
 .portfolio-mosaic .mosaic-item{
   transition:opacity .55s ease,transform .55s ease,filter .55s ease;
 }
+
 .portfolio-mosaic.is-refreshing .mosaic-item{
   opacity:0;
   transform:scale(.985);
@@ -73,11 +72,16 @@ main{position:relative;isolation:isolate}
 }
 
 @media(max-width:720px){
-  body{background-size:390px 390px;background-attachment:scroll}
+  body{
+    background-size:340px 340px;
+    background-attachment:scroll;
+  }
+
   .hero,
   .section:not(.dark):not(.pizza-events),
-  .section.paper,
-  .section.dark{background-size:auto,390px 390px}
+  .section.paper{
+    background-color:rgba(255,250,243,.72) !important;
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
