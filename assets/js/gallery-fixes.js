@@ -3,7 +3,7 @@
 
   const backgroundCss = document.createElement('link');
   backgroundCss.rel = 'stylesheet';
-  backgroundCss.href = 'assets/css/gastronomic-background.css?v=20260730-1';
+  backgroundCss.href = 'assets/css/gastronomic-background.css?v=20260730-2';
   document.head.appendChild(backgroundCss);
 
   const removeDuplicatePortfolioImages = () => {
@@ -85,169 +85,18 @@
     {src:'assets/img/pizzas/pizza-parma-com-pesto.jpg', title:'Pizza de Parma com pesto'},
     {src:'assets/img/pizzas/pizza-couve-flor-e-bacon.jpg', title:'Pizza de couve-flor e bacon'},
     {src:'assets/img/pizzas/pizza-calabresa-artesanal.jpg', title:'Pizza artesanal de calabresa'},
-    {src:'assets/img/pizzas/pizza-tomates-confitados.jpg', title:'Pizza com tomates confitados e manjericão'}
+    {src:'assets/img/pizzas/pizza-tomates-confitados-manjericao.jpg', title:'Pizza com tomates confitados e manjericão'}
   ];
 
-  const previewPizzaPortfolio = [
-    fullPizzaPortfolio[0],
-    fullPizzaPortfolio[8],
-    fullPizzaPortfolio[9]
-  ];
-
-  const lightbox = document.querySelector('#gallery-lightbox');
-  let pizzaLightboxActive = false;
-  let pizzaLightboxIndex = 0;
-
-  const showPizzaLightboxItem = () => {
-    if (!lightbox || !fullPizzaPortfolio.length) return;
-    const item = fullPizzaPortfolio[pizzaLightboxIndex];
-    const image = lightbox.querySelector('.lightbox-image');
-    const caption = lightbox.querySelector('.lightbox-caption');
-    if (image) {
-      image.src = item.src;
-      image.alt = item.title;
-    }
-    if (caption) caption.textContent = `${item.title} — Eventos de Pizzas`;
-  };
-
-  const openPizzaLightbox = (item, requestedIndex) => {
-    if (!item || !lightbox) return;
-    const resolvedIndex = Number.isInteger(requestedIndex)
-      ? requestedIndex
-      : fullPizzaPortfolio.findIndex((pizza) => pizza.src === item.src);
-    pizzaLightboxIndex = resolvedIndex >= 0 ? resolvedIndex : 0;
-    pizzaLightboxActive = true;
-    showPizzaLightboxItem();
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    lightbox.querySelector('.lightbox-close')?.focus();
-  };
-
-  const movePizzaLightbox = (direction) => {
-    pizzaLightboxIndex = (pizzaLightboxIndex + direction + fullPizzaPortfolio.length) % fullPizzaPortfolio.length;
-    showPizzaLightboxItem();
-  };
-
-  const setupPizzaOnlyNavigation = () => {
-    if (!lightbox || lightbox.dataset.pizzaNavigationReady === 'true') return;
-    lightbox.dataset.pizzaNavigationReady = 'true';
-
-    lightbox.querySelector('.lightbox-prev')?.addEventListener('click', (event) => {
-      if (!pizzaLightboxActive) return;
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      movePizzaLightbox(-1);
-    }, true);
-
-    lightbox.querySelector('.lightbox-next')?.addEventListener('click', (event) => {
-      if (!pizzaLightboxActive) return;
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      movePizzaLightbox(1);
-    }, true);
-
-    lightbox.querySelector('.lightbox-close')?.addEventListener('click', () => {
-      pizzaLightboxActive = false;
-    }, true);
-
-    lightbox.addEventListener('click', (event) => {
-      if (event.target === lightbox) pizzaLightboxActive = false;
-    }, true);
-
-    document.addEventListener('keydown', (event) => {
-      if (!pizzaLightboxActive || !lightbox.classList.contains('open')) return;
-      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        movePizzaLightbox(event.key === 'ArrowLeft' ? -1 : 1);
-      } else if (event.key === 'Escape') {
-        pizzaLightboxActive = false;
-      }
-    }, true);
-  };
-
-  const setupPizzaPortfolio = () => {
-    if (pizzaGallery.dataset.compactReady === 'true') return;
-    pizzaGallery.dataset.compactReady = 'true';
-    setupPizzaOnlyNavigation();
-
-    pizzaGallery.innerHTML = previewPizzaPortfolio.map((item, index) => `
-      <figure class="pizza-photo" tabindex="0" role="button" data-pizza-index="${fullPizzaPortfolio.indexOf(item)}" aria-label="Abrir ${escapeText(item.title)}">
-        ${index === 0 ? '<span class="pizza-badge">Feita na hora</span>' : ''}
-        <img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy">
-        <figcaption>${escapeText(item.title)}</figcaption>
-      </figure>`).join('');
-
-    pizzaGallery.querySelectorAll('.pizza-photo').forEach((card) => {
-      const open = () => {
-        const index = Number(card.dataset.pizzaIndex || 0);
-        openPizzaLightbox(fullPizzaPortfolio[index], index);
-      };
-      card.addEventListener('click', open);
-      card.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          open();
-        }
-      });
-    });
-
-    document.querySelector('.pizza-more-actions')?.remove();
-    document.querySelector('.pizza-portfolio-modal')?.remove();
-
-    const actions = document.createElement('div');
-    actions.className = 'pizza-more-actions';
-    actions.innerHTML = '<button class="pizza-see-more" type="button">VEJA MAIS</button>';
-    pizzaGallery.insertAdjacentElement('afterend', actions);
-
-    const modal = document.createElement('div');
-    modal.className = 'pizza-portfolio-modal';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('aria-label', 'Portfólio completo de pizzas');
-    modal.innerHTML = `
-      <div class="pizza-portfolio-dialog">
-        <div class="pizza-portfolio-heading">
-          <div><span>Eventos de Pizzas</span><h2>Portfólio de pizzas</h2></div>
-          <button class="pizza-portfolio-close" type="button" aria-label="Fechar portfólio de pizzas">×</button>
-        </div>
-        <div class="pizza-portfolio-grid"></div>
-      </div>`;
-    document.body.appendChild(modal);
-
-    const grid = modal.querySelector('.pizza-portfolio-grid');
-    grid.innerHTML = fullPizzaPortfolio.map((item, index) => `
-      <button class="pizza-portfolio-card" type="button" data-pizza-index="${index}" aria-label="Abrir ${escapeText(item.title)}">
-        <img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy">
-        <span>${escapeText(item.title)}</span>
-      </button>`).join('');
-
-    const close = () => {
-      modal.classList.remove('open');
-      document.body.style.overflow = '';
-    };
-    const open = () => {
-      modal.classList.add('open');
-      document.body.style.overflow = 'hidden';
-      modal.querySelector('.pizza-portfolio-close')?.focus();
-    };
-
-    actions.querySelector('.pizza-see-more')?.addEventListener('click', open);
-    modal.querySelector('.pizza-portfolio-close')?.addEventListener('click', close);
-    modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
-
-    modal.querySelectorAll('.pizza-portfolio-card').forEach((button) => {
-      button.addEventListener('click', () => {
-        const index = Number(button.dataset.pizzaIndex || 0);
-        close();
-        openPizzaLightbox(fullPizzaPortfolio[index], index);
-      });
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && modal.classList.contains('open')) close();
-    });
-  };
-
-  setupPizzaPortfolio();
+  const existingSources = new Set([...pizzaGallery.querySelectorAll('img')].map((img) => img.getAttribute('src')));
+  fullPizzaPortfolio.forEach((item) => {
+    if (existingSources.has(item.src)) return;
+    const figure = document.createElement('figure');
+    figure.className = 'pizza-photo';
+    figure.tabIndex = 0;
+    figure.setAttribute('role', 'button');
+    figure.setAttribute('aria-label', `Abrir ${item.title}`);
+    figure.innerHTML = `<img src="${item.src}" alt="${item.title}" loading="lazy"><figcaption>${item.title}</figcaption>`;
+    pizzaGallery.appendChild(figure);
+  });
 })();
