@@ -12,10 +12,10 @@ body{
 
 main{position:relative;isolation:isolate}
 
-/* O desenho também é aplicado diretamente nas áreas claras.
-   Assim ele continua visível mesmo quando a seção ocupa toda a largura. */
+/* Aplica o padrão somente nas áreas claras do site.
+   A seção de pizzas mantém integralmente o visual escuro original. */
 .hero,
-.section:not(.dark){
+.section:not(.dark):not(.pizza-events){
   background-color:#fffaf3;
   background-image:
     linear-gradient(rgba(255,250,243,.82),rgba(255,250,243,.82)),
@@ -43,10 +43,16 @@ main{position:relative;isolation:isolate}
   background-size:auto,520px 520px;
 }
 
+/* Proteção explícita contra alterações do papel de parede nessa seção. */
+.section.pizza-events{
+  background:#241a12;
+  background-image:none;
+  color:#fff;
+}
+
 .nav{background-color:rgba(250,246,239,.94);backdrop-filter:blur(10px)}
 .footer{background-color:rgba(37,29,22,.98)}
 
-/* Mantém os blocos de leitura limpos sobre o padrão. */
 .hero-card,
 .card,
 .form,
@@ -69,7 +75,7 @@ main{position:relative;isolation:isolate}
 @media(max-width:720px){
   body{background-size:390px 390px;background-attachment:scroll}
   .hero,
-  .section:not(.dark),
+  .section:not(.dark):not(.pizza-events),
   .section.paper,
   .section.dark{background-size:auto,390px 390px}
 }
