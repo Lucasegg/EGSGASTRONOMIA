@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="620" viewBox="0 0 620 620">
+  <rect width="620" height="620" fill="#fbf6ed"/>
+  <g fill="none" stroke="#b8733e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".13">
+    <!-- pizza -->
+    <g transform="translate(55 55) rotate(-12 70 70)">
+      <path d="M18 118 72 18l54 100c-34 17-74 17-108 0Z"/>
+      <path d="M30 96c28 13 56 13 84 0"/>
+      <circle cx="66" cy="65" r="7"/><circle cx="91" cy="85" r="6"/><circle cx="53" cy="94" r="5"/>
+    </g>
+    <!-- skewer -->
+    <g transform="translate(350 52) rotate(15 80 70)">
+      <path d="M18 130 145 8"/>
+      <rect x="38" y="90" width="34" height="25" rx="8" transform="rotate(-43 55 102)"/>
+      <rect x="73" y="57" width="34" height="25" rx="8" transform="rotate(-43 90 69)"/>
+      <rect x="108" y="24" width="34" height="25" rx="8" transform="rotate(-43 125 36)"/>
+    </g>
+    <!-- coxinha -->
+    <g transform="translate(80 340) rotate(8 70 70)">
+      <path d="M70 12c5 28 48 46 48 86 0 34-22 55-48 55S22 132 22 98c0-40 43-58 48-86Z"/>
+      <path d="M42 116c18 12 38 12 56 0"/>
+    </g>
+    <!-- cupcake / doce -->
+    <g transform="translate(365 355) rotate(-8 70 70)">
+      <path d="M36 78h78l-10 63H46L36 78Z"/>
+      <path d="M43 78c-8-25 10-42 28-39 5-18 35-18 40 4 20-2 30 18 20 35H43Z"/>
+      <path d="M58 91v37M76 91v37M94 91v37"/>
+      <circle cx="84" cy="25" r="8"/>
+    </g>
+    <!-- small accents -->
+    <path d="M285 255c14-13 28-13 42 0-14 13-28 13-42 0Z"/>
+    <path d="M274 279c12-10 24-10 36 0-12 10-24 10-36 0Z"/>
+    <circle cx="545" cy="286" r="18"/><path d="M527 286h36M545 268v36"/>
+    <path d="M248 520c20-21 43-21 63 0-20 21-43 21-63 0Z"/>
+  </g>
+</svg>
