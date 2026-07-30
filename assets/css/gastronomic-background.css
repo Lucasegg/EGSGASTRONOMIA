@@ -1,0 +1,32 @@
+body{
+  background-color:#fbf6ed;
+  background-image:url('../img/gastronomic-wallpaper.svg');
+  background-repeat:repeat;
+  background-size:620px 620px;
+  background-attachment:fixed;
+}
+
+main{position:relative;isolation:isolate}
+.hero,.section:not(.dark){background-color:rgba(255,252,247,.93)}
+.section.paper{background-color:rgba(255,253,249,.96)}
+.section.dark{background-color:rgba(43,33,24,.97)}
+.nav{background-color:rgba(250,246,239,.96);backdrop-filter:blur(10px)}
+.footer{background-color:rgba(37,29,22,.98)}
+
+.portfolio-mosaic .mosaic-item{
+  transition:opacity .55s ease,transform .55s ease,filter .55s ease;
+}
+.portfolio-mosaic.is-refreshing .mosaic-item{
+  opacity:0;
+  transform:scale(.985);
+  filter:blur(2px);
+}
+
+@media(max-width:720px){
+  body{background-size:430px 430px;background-attachment:scroll}
+  .hero,.section:not(.dark){background-color:rgba(255,252,247,.96)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .portfolio-mosaic .mosaic-item{transition:none}
+}
