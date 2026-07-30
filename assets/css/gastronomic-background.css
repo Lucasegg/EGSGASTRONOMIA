@@ -1,64 +1,117 @@
 html{
-  background:#f8efe3;
+  background:#fbf6ee;
 }
 
-/* Papel de parede único e contínuo, fixado atrás de todo o site. */
 body{
-  background-color:#f8efe3;
-  background-image:url('../img/gastronomic-wallpaper.svg');
+  position:relative;
+  isolation:isolate;
+  background:#fbf6ee;
+}
+
+/* Marca-d'água única atrás de todo o site. */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:url('../img/gastronomic-wallpaper.svg?v=20260730-2');
   background-repeat:repeat;
-  background-size:440px 440px;
+  background-size:420px 420px;
   background-position:center top;
-  background-attachment:fixed;
+  opacity:.055;
+}
+
+body > *{
+  position:relative;
+  z-index:1;
 }
 
 main{
-  position:relative;
-  isolation:isolate;
   background:transparent;
 }
 
-/* As seções claras funcionam como uma película translúcida.
-   O desenho visto é sempre o papel de parede contínuo do body. */
+/* Seções claras: película quase opaca, preservando a marca-d'água ao fundo. */
 .hero,
 .section:not(.dark):not(.pizza-events),
 .section.paper{
-  background-color:rgba(255,250,243,.68) !important;
+  background-color:rgba(255,250,243,.88) !important;
   background-image:none !important;
 }
 
-/* Áreas escuras continuam legíveis, mas ainda deixam a marca d'água aparecer. */
+/* Seções escuras comuns. */
 .section.dark:not(.pizza-events){
-  background-color:rgba(43,33,24,.94) !important;
+  background:#2b2118 !important;
   background-image:none !important;
 }
 
-/* Mantém o visual escuro original da seção de pizzas,
-   agora com leve transparência para o papel de parede continuar ao fundo. */
-.section.pizza-events{
-  background-color:rgba(36,26,18,.96) !important;
+/* Restauração completa da seção Eventos de Pizzas. */
+#pizzas.section.pizza-events{
+  position:relative;
+  overflow:hidden;
+  background:#241a12 !important;
+  background-color:#241a12 !important;
   background-image:none !important;
+  color:#fff !important;
+}
+
+#pizzas.section.pizza-events::before{
+  content:"";
+  position:absolute;
+  width:420px;
+  height:420px;
+  border-radius:50%;
+  right:-160px;
+  top:-170px;
+  background:#c97b3a22;
+  opacity:1;
+}
+
+#pizzas .pizza-showcase{
+  position:relative;
+  z-index:1;
+}
+
+#pizzas .pizza-copy,
+#pizzas .pizza-copy h2,
+#pizzas .pizza-benefits span,
+#pizzas .pizza-actions .ghost,
+#pizzas .pizza-note{
   color:#fff;
 }
 
+#pizzas .pizza-kicker{
+  color:#f2bd89;
+}
+
+#pizzas .pizza-copy h2 em{
+  color:#e9a363;
+}
+
+#pizzas .pizza-copy > p{
+  color:#ffffffb5 !important;
+}
+
+#pizzas .pizza-benefits span{
+  border-color:#ffffff18;
+  background:#ffffff08;
+}
+
+#pizzas .pizza-actions .ghost{
+  border-color:#ffffff3b;
+}
+
+#pizzas .pizza-note{
+  color:#ffffff75;
+}
+
 .nav{
-  background-color:rgba(250,246,239,.92);
+  background-color:rgba(250,246,239,.94);
   backdrop-filter:blur(10px);
 }
 
 .footer{
-  background-color:rgba(37,29,22,.97);
-}
-
-/* Blocos de conteúdo permanecem limpos e destacados sobre a marca d'água. */
-.hero-card,
-.card,
-.form,
-.pizza-copy,
-.pizza-gallery,
-.portfolio-card,
-.mosaic-item{
-  position:relative;
+  background:#251d16;
 }
 
 .portfolio-mosaic .mosaic-item{
@@ -72,15 +125,16 @@ main{
 }
 
 @media(max-width:720px){
-  body{
-    background-size:340px 340px;
-    background-attachment:scroll;
+  body::before{
+    position:absolute;
+    background-size:330px 330px;
+    opacity:.05;
   }
 
   .hero,
   .section:not(.dark):not(.pizza-events),
   .section.paper{
-    background-color:rgba(255,250,243,.72) !important;
+    background-color:rgba(255,250,243,.9) !important;
   }
 }
 
