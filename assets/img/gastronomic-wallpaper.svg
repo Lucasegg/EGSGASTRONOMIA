@@ -1,35 +1,72 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="620" height="620" viewBox="0 0 620 620">
-  <rect width="620" height="620" fill="#fbf6ed"/>
-  <g fill="none" stroke="#b8733e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".13">
-    <!-- pizza -->
-    <g transform="translate(55 55) rotate(-12 70 70)">
-      <path d="M18 118 72 18l54 100c-34 17-74 17-108 0Z"/>
-      <path d="M30 96c28 13 56 13 84 0"/>
-      <circle cx="66" cy="65" r="7"/><circle cx="91" cy="85" r="6"/><circle cx="53" cy="94" r="5"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420">
+  <g fill="none" stroke="#b86d35" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="translate(18 18) rotate(-10 42 42)">
+      <path d="M12 72 42 14l31 58c-19 10-42 10-61 0Z"/>
+      <path d="M19 59c16 7 32 7 48 0"/>
+      <circle cx="39" cy="39" r="3.5"/><circle cx="54" cy="50" r="3"/>
     </g>
-    <!-- skewer -->
-    <g transform="translate(350 52) rotate(15 80 70)">
-      <path d="M18 130 145 8"/>
-      <rect x="38" y="90" width="34" height="25" rx="8" transform="rotate(-43 55 102)"/>
-      <rect x="73" y="57" width="34" height="25" rx="8" transform="rotate(-43 90 69)"/>
-      <rect x="108" y="24" width="34" height="25" rx="8" transform="rotate(-43 125 36)"/>
+    <g transform="translate(128 18)">
+      <path d="M12 18h62M20 18v48c0 13 46 13 46 0V18"/>
+      <path d="M30 8v10M44 6v12M58 8v10"/>
     </g>
-    <!-- coxinha -->
-    <g transform="translate(80 340) rotate(8 70 70)">
-      <path d="M70 12c5 28 48 46 48 86 0 34-22 55-48 55S22 132 22 98c0-40 43-58 48-86Z"/>
-      <path d="M42 116c18 12 38 12 56 0"/>
+    <g transform="translate(252 16) rotate(10 45 45)">
+      <path d="M8 78 80 8"/>
+      <rect x="24" y="52" width="20" height="14" rx="5" transform="rotate(-43 34 59)"/>
+      <rect x="45" y="32" width="20" height="14" rx="5" transform="rotate(-43 55 39)"/>
     </g>
-    <!-- cupcake / doce -->
-    <g transform="translate(365 355) rotate(-8 70 70)">
-      <path d="M36 78h78l-10 63H46L36 78Z"/>
-      <path d="M43 78c-8-25 10-42 28-39 5-18 35-18 40 4 20-2 30 18 20 35H43Z"/>
-      <path d="M58 91v37M76 91v37M94 91v37"/>
-      <circle cx="84" cy="25" r="8"/>
+    <g transform="translate(342 20)">
+      <path d="M18 10v68M9 10v22c0 14 18 14 18 0V10M52 10v68M43 10c0 18 18 18 18 0"/>
     </g>
-    <!-- small accents -->
-    <path d="M285 255c14-13 28-13 42 0-14 13-28 13-42 0Z"/>
-    <path d="M274 279c12-10 24-10 36 0-12 10-24 10-36 0Z"/>
-    <circle cx="545" cy="286" r="18"/><path d="M527 286h36M545 268v36"/>
-    <path d="M248 520c20-21 43-21 63 0-20 21-43 21-63 0Z"/>
+
+    <g transform="translate(18 132)">
+      <path d="M42 8c4 18 29 31 29 56 0 22-13 35-29 35S13 86 13 64c0-25 25-38 29-56Z"/>
+      <path d="M25 77c11 7 23 7 34 0"/>
+    </g>
+    <g transform="translate(125 136) rotate(-7 42 42)">
+      <path d="M16 52h54l-7 42H23l-7-42Z"/>
+      <path d="M20 52c-5-17 7-28 20-26 4-13 24-12 27 3 14-1 21 12 14 23H20Z"/>
+      <path d="M31 62v23M43 62v23M55 62v23"/>
+    </g>
+    <g transform="translate(244 132)">
+      <path d="M12 38h70v50H12zM22 38c0-18 50-18 50 0M27 88v9M67 88v9"/>
+      <path d="M31 22h32M47 10v12"/>
+    </g>
+    <g transform="translate(344 142) rotate(9 30 30)">
+      <path d="M8 55c16-20 31-34 47-47M18 63c20-16 34-31 47-47"/>
+      <path d="M12 14c10 0 10 14 0 14S2 14 12 14ZM60 48c10 0 10 14 0 14s-10-14 0-14Z"/>
+    </g>
+
+    <g transform="translate(22 250) rotate(8 44 44)">
+      <path d="M8 44h75M18 44l7 44h41l7-44M24 29c10-15 42-15 52 0"/>
+      <path d="M34 15h31M49 6v9"/>
+    </g>
+    <g transform="translate(140 250)">
+      <path d="M12 72 42 14l31 58c-19 10-42 10-61 0Z"/>
+      <path d="M19 59c16 7 32 7 48 0"/>
+      <circle cx="39" cy="39" r="3.5"/><circle cx="54" cy="50" r="3"/>
+    </g>
+    <g transform="translate(258 248)">
+      <path d="M14 18h58v58H14zM21 28h44M21 39h44M21 50h44M21 61h44"/>
+      <path d="M72 28h10v36H72"/>
+    </g>
+    <g transform="translate(356 250)">
+      <path d="M10 10v74M28 10v74M10 22h18M10 35h18M10 48h18M10 61h18"/>
+    </g>
+
+    <g transform="translate(18 350)">
+      <path d="M12 28h66M20 28v42c0 16 50 16 50 0V28"/>
+      <path d="M30 14v14M45 11v17M60 14v14"/>
+    </g>
+    <g transform="translate(134 346) rotate(-8 42 42)">
+      <path d="M8 78 80 8"/>
+      <rect x="24" y="52" width="20" height="14" rx="5" transform="rotate(-43 34 59)"/>
+      <rect x="45" y="32" width="20" height="14" rx="5" transform="rotate(-43 55 39)"/>
+    </g>
+    <g transform="translate(250 346)">
+      <path d="M18 16h54v60H18zM27 8h36M27 28h36M27 40h36M27 52h36"/>
+    </g>
+    <g transform="translate(350 350)">
+      <circle cx="30" cy="30" r="24"/><path d="M30 6v48M6 30h48"/>
+    </g>
   </g>
 </svg>
