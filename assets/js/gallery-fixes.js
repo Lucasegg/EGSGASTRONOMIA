@@ -3,7 +3,7 @@
 
   const backgroundCss = document.createElement('link');
   backgroundCss.rel = 'stylesheet';
-  backgroundCss.href = 'assets/css/gastronomic-background.css?v=20260730-2';
+  backgroundCss.href = 'assets/css/gastronomic-background.css?v=20260730-3';
   document.head.appendChild(backgroundCss);
 
   const removeDuplicatePortfolioImages = () => {
@@ -33,7 +33,7 @@
         const img = card.querySelector('img');
         const title = card.querySelector('figcaption strong')?.textContent?.trim() || img?.alt?.trim();
         if (img?.getAttribute('src') && title && !img.src.includes('mousse-de-limao-conjunto.jpg')) {
-          unique.set(img.getAttribute('src'), {src:img.getAttribute('src'), title});
+          unique.set(img.getAttribute('src'), {src: img.getAttribute('src'), title});
         }
       });
       return [...unique.values()];
@@ -69,36 +69,56 @@
 
   setupRotatingMosaic();
   if (portfolioGrid) {
-    new MutationObserver(setupRotatingMosaic).observe(portfolioGrid, {childList:true, subtree:true});
+    new MutationObserver(setupRotatingMosaic).observe(portfolioGrid, {childList: true, subtree: true});
   }
 
   const pizzaGallery = document.querySelector('.pizza-gallery');
   if (!pizzaGallery) return;
 
   const previewItems = [
-    {src:'assets/img/galeria/pizza-no-forno.jpg', title:'Pizza assada no forno', index:0},
-    {src:'assets/img/pizzas/pizza-calabresa-artesanal.jpg', title:'Pizza artesanal de calabresa', index:8},
-    {src:'assets/img/pizzas/pizza-tomates-confitados.jpg', title:'Pizza com tomates confitados e manjericão', index:9}
+    {src: 'assets/img/galeria/pizza-no-forno.jpg', title: 'Pizza assada no forno', index: 0},
+    {src: 'assets/img/pizzas/pizza-calabresa-artesanal.jpg', title: 'Pizza artesanal de calabresa', index: 8},
+    {src: 'assets/img/pizzas/pizza-tomates-confitados.jpg', title: 'Pizza com tomates confitados e manjericão', index: 9}
   ];
 
-  const cards = [...pizzaGallery.querySelectorAll('.pizza-photo')].slice(0, 3);
-  pizzaGallery.querySelectorAll('.pizza-photo:nth-child(n+4)').forEach((card) => card.remove());
+  let enforcingPreview = false;
 
-  cards.forEach((card, position) => {
-    const item = previewItems[position];
-    if (!item) return;
-    card.dataset.index = String(item.index);
-    card.setAttribute('aria-label', `Abrir ${item.title}`);
-    const image = card.querySelector('img');
-    const caption = card.querySelector('figcaption');
-    if (image) {
-      image.src = item.src;
-      image.alt = item.title;
+  const enforcePizzaPreview = () => {
+    if (enforcingPreview) return;
+    enforcingPreview = true;
+
+    const currentCards = [...pizzaGallery.querySelectorAll('.pizza-photo')];
+    currentCards.slice(3).forEach((card) => card.remove());
+
+    while (pizzaGallery.querySelectorAll('.pizza-photo').length < 3) {
+      const card = document.createElement('figure');
+      card.className = 'pizza-photo';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.innerHTML = '<img loading="lazy"><figcaption></figcaption>';
+      pizzaGallery.appendChild(card);
     }
-    if (caption) caption.textContent = item.title;
-    card.querySelector('.pizza-badge')?.remove();
-    if (position === 0) card.insertAdjacentHTML('afterbegin', '<span class="pizza-badge">Feita na hora</span>');
-  });
+
+    [...pizzaGallery.querySelectorAll('.pizza-photo')].slice(0, 3).forEach((card, position) => {
+      const item = previewItems[position];
+      card.dataset.index = String(item.index);
+      card.setAttribute('aria-label', `Abrir ${item.title}`);
+      const image = card.querySelector('img');
+      const caption = card.querySelector('figcaption');
+      if (image) {
+        image.src = item.src;
+        image.alt = item.title;
+      }
+      if (caption) caption.textContent = item.title;
+      card.querySelector('.pizza-badge')?.remove();
+      if (position === 0) card.insertAdjacentHTML('afterbegin', '<span class="pizza-badge">Feita na hora</span>');
+    });
+
+    enforcingPreview = false;
+  };
+
+  enforcePizzaPreview();
+  new MutationObserver(enforcePizzaPreview).observe(pizzaGallery, {childList: true, subtree: false});
 
   let moreArea = pizzaGallery.parentElement?.querySelector('.pizza-more-area');
   if (!moreArea) {
