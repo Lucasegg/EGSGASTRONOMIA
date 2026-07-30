@@ -1,17 +1,61 @@
+html{
+  background:#f8efe3;
+}
+
 body{
-  background-color:#fbf6ed;
+  background-color:#f8efe3;
   background-image:url('../img/gastronomic-wallpaper.svg');
   background-repeat:repeat;
-  background-size:620px 620px;
+  background-size:520px 520px;
   background-attachment:fixed;
 }
 
 main{position:relative;isolation:isolate}
-.hero,.section:not(.dark){background-color:rgba(255,252,247,.93)}
-.section.paper{background-color:rgba(255,253,249,.96)}
-.section.dark{background-color:rgba(43,33,24,.97)}
-.nav{background-color:rgba(250,246,239,.96);backdrop-filter:blur(10px)}
+
+/* O desenho também é aplicado diretamente nas áreas claras.
+   Assim ele continua visível mesmo quando a seção ocupa toda a largura. */
+.hero,
+.section:not(.dark){
+  background-color:#fffaf3;
+  background-image:
+    linear-gradient(rgba(255,250,243,.82),rgba(255,250,243,.82)),
+    url('../img/gastronomic-wallpaper.svg');
+  background-repeat:repeat;
+  background-size:auto,520px 520px;
+  background-position:0 0;
+}
+
+.section.paper{
+  background-color:#fffdf8;
+  background-image:
+    linear-gradient(rgba(255,253,248,.86),rgba(255,253,248,.86)),
+    url('../img/gastronomic-wallpaper.svg');
+  background-repeat:repeat;
+  background-size:auto,520px 520px;
+}
+
+.section.dark{
+  background-color:#2b2118;
+  background-image:
+    linear-gradient(rgba(43,33,24,.93),rgba(43,33,24,.93)),
+    url('../img/gastronomic-wallpaper.svg');
+  background-repeat:repeat;
+  background-size:auto,520px 520px;
+}
+
+.nav{background-color:rgba(250,246,239,.94);backdrop-filter:blur(10px)}
 .footer{background-color:rgba(37,29,22,.98)}
+
+/* Mantém os blocos de leitura limpos sobre o padrão. */
+.hero-card,
+.card,
+.form,
+.pizza-copy,
+.pizza-gallery,
+.portfolio-card,
+.mosaic-item{
+  position:relative;
+}
 
 .portfolio-mosaic .mosaic-item{
   transition:opacity .55s ease,transform .55s ease,filter .55s ease;
@@ -23,8 +67,11 @@ main{position:relative;isolation:isolate}
 }
 
 @media(max-width:720px){
-  body{background-size:430px 430px;background-attachment:scroll}
-  .hero,.section:not(.dark){background-color:rgba(255,252,247,.96)}
+  body{background-size:390px 390px;background-attachment:scroll}
+  .hero,
+  .section:not(.dark),
+  .section.paper,
+  .section.dark{background-size:auto,390px 390px}
 }
 
 @media(prefers-reduced-motion:reduce){
