@@ -75,28 +75,40 @@
   const pizzaGallery = document.querySelector('.pizza-gallery');
   if (!pizzaGallery) return;
 
-  const fullPizzaPortfolio = [
-    {src:'assets/img/galeria/pizza-no-forno.jpg', title:'Pizza assada no forno'},
-    {src:'assets/img/galeria/pizza-vegetariana.jpg', title:'Pizza vegetariana artesanal'},
-    {src:'assets/img/galeria/pizza-frango.jpg', title:'Pizza de frango com queijo'},
-    {src:'assets/img/pizzas/pizza-quatro-queijos.jpg', title:'Pizza de quatro queijos'},
-    {src:'assets/img/pizzas/pizza-tomate-e-queijo.jpg', title:'Pizza de tomate e queijo'},
-    {src:'assets/img/pizzas/pizza-margherita-ao-vivo.jpg', title:'Pizza Margherita finalizada ao vivo'},
-    {src:'assets/img/pizzas/pizza-parma-com-pesto.jpg', title:'Pizza de Parma com pesto'},
-    {src:'assets/img/pizzas/pizza-couve-flor-e-bacon.jpg', title:'Pizza de couve-flor e bacon'},
-    {src:'assets/img/pizzas/pizza-calabresa-artesanal.jpg', title:'Pizza artesanal de calabresa'},
-    {src:'assets/img/pizzas/pizza-tomates-confitados-manjericao.jpg', title:'Pizza com tomates confitados e manjericão'}
+  const previewItems = [
+    {src:'assets/img/galeria/pizza-no-forno.jpg', title:'Pizza assada no forno', index:0},
+    {src:'assets/img/pizzas/pizza-calabresa-artesanal.jpg', title:'Pizza artesanal de calabresa', index:8},
+    {src:'assets/img/pizzas/pizza-tomates-confitados.jpg', title:'Pizza com tomates confitados e manjericão', index:9}
   ];
 
-  const existingSources = new Set([...pizzaGallery.querySelectorAll('img')].map((img) => img.getAttribute('src')));
-  fullPizzaPortfolio.forEach((item) => {
-    if (existingSources.has(item.src)) return;
-    const figure = document.createElement('figure');
-    figure.className = 'pizza-photo';
-    figure.tabIndex = 0;
-    figure.setAttribute('role', 'button');
-    figure.setAttribute('aria-label', `Abrir ${item.title}`);
-    figure.innerHTML = `<img src="${item.src}" alt="${item.title}" loading="lazy"><figcaption>${item.title}</figcaption>`;
-    pizzaGallery.appendChild(figure);
+  const cards = [...pizzaGallery.querySelectorAll('.pizza-photo')].slice(0, 3);
+  pizzaGallery.querySelectorAll('.pizza-photo:nth-child(n+4)').forEach((card) => card.remove());
+
+  cards.forEach((card, position) => {
+    const item = previewItems[position];
+    if (!item) return;
+    card.dataset.index = String(item.index);
+    card.setAttribute('aria-label', `Abrir ${item.title}`);
+    const image = card.querySelector('img');
+    const caption = card.querySelector('figcaption');
+    if (image) {
+      image.src = item.src;
+      image.alt = item.title;
+    }
+    if (caption) caption.textContent = item.title;
+    card.querySelector('.pizza-badge')?.remove();
+    if (position === 0) card.insertAdjacentHTML('afterbegin', '<span class="pizza-badge">Feita na hora</span>');
+  });
+
+  let moreArea = pizzaGallery.parentElement?.querySelector('.pizza-more-area');
+  if (!moreArea) {
+    moreArea = document.createElement('div');
+    moreArea.className = 'pizza-more-area';
+    moreArea.innerHTML = '<button class="btn pizza-view-more" type="button">VEJA MAIS</button>';
+    pizzaGallery.insertAdjacentElement('afterend', moreArea);
+  }
+
+  moreArea.querySelector('.pizza-view-more')?.addEventListener('click', () => {
+    pizzaGallery.querySelector('.pizza-photo')?.click();
   });
 })();
