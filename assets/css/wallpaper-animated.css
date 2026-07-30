@@ -1,0 +1,61 @@
+/* Camada isolada do papel de parede aprovado. Não altera componentes ou galerias. */
+body{
+  background-color:#f7f3ec;
+  background-image:url('../img/pattern-gastronomia-tom-sobre-tom.svg');
+  background-repeat:repeat;
+  background-size:540px 540px;
+  background-attachment:fixed;
+  animation:egsWallpaperFall 90s linear infinite;
+}
+
+main>section::before,
+.footer::before{
+  background-image:url('../img/pattern-gastronomia-tom-sobre-tom.svg');
+  background-repeat:repeat;
+  background-size:540px 540px;
+  opacity:.58;
+  animation:egsWallpaperFall 90s linear infinite;
+}
+
+main>section:nth-of-type(even)::before{
+  background-size:620px 620px;
+  background-position:170px -110px;
+  animation-duration:118s;
+}
+
+main>section:nth-of-type(3n)::before{
+  background-position:-230px 140px;
+  animation-duration:104s;
+}
+
+main>section.dark::before,
+main>section.pizza-events::before,
+.footer::before{
+  opacity:.10;
+  filter:grayscale(1) brightness(1.75);
+}
+
+@keyframes egsWallpaperFall{
+  from{background-position:0 -540px}
+  to{background-position:0 0}
+}
+
+@media(max-width:700px){
+  body,
+  main>section::before,
+  .footer::before{
+    background-size:430px 430px;
+  }
+  @keyframes egsWallpaperFall{
+    from{background-position:0 -430px}
+    to{background-position:0 0}
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  body,
+  main>section::before,
+  .footer::before{
+    animation:none!important;
+  }
+}
