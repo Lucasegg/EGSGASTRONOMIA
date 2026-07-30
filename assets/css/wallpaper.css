@@ -1,0 +1,51 @@
+/* Papel de parede global EGS — camada visual isolada.
+   Não altera estrutura, dimensões, galerias, textos ou interações. */
+body{
+  background-color:#f7f3ec;
+  background-image:url('../img/pattern-gastronomia-tom-sobre-tom.svg');
+  background-repeat:repeat;
+  background-size:420px 420px;
+  background-attachment:fixed;
+}
+
+main > section,
+.footer{
+  position:relative;
+  isolation:isolate;
+}
+
+main > section::before,
+.footer::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:url('../img/pattern-gastronomia-tom-sobre-tom.svg');
+  background-repeat:repeat;
+  background-size:420px 420px;
+  opacity:.42;
+}
+
+main > section > *,
+.footer > *{
+  position:relative;
+  z-index:1;
+}
+
+/* Em fundos escuros, o desenho permanece ainda mais discreto. */
+main > section.dark::before,
+main > section.pizza-events::before,
+.footer::before{
+  opacity:.13;
+  filter:grayscale(1) brightness(1.8);
+}
+
+/* Em telas menores, o padrão fica um pouco mais espaçado. */
+@media(max-width:700px){
+  body,
+  main > section::before,
+  .footer::before{
+    background-size:360px 360px;
+  }
+}
