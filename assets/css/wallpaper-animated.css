@@ -59,3 +59,24 @@ main>section.pizza-events::before,
     animation:none!important;
   }
 }
+
+/* Ajustes solicitados para a identidade visual da página inicial. */
+.brand{
+  border-radius:50%;
+  background-size:cover;
+  clip-path:circle(50% at 50% 50%);
+}
+
+.hero-card{
+  background:transparent;
+  border:0;
+  padding:0;
+  border-radius:0;
+  box-shadow:none;
+}
+
+.hero-mark{
+  border-radius:50%;
+  background-size:cover;
+  box-shadow:0 16px 36px rgba(44,36,22,.14);
+}
