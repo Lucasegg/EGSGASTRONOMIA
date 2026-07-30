@@ -1,6 +1,11 @@
 (() => {
   'use strict';
 
+  const backgroundCss = document.createElement('link');
+  backgroundCss.rel = 'stylesheet';
+  backgroundCss.href = 'assets/css/gastronomic-background.css?v=20260730-1';
+  document.head.appendChild(backgroundCss);
+
   const removeDuplicatePortfolioImages = () => {
     document.querySelectorAll('#portfolio-grid .portfolio-card, #portfolio-mosaic .mosaic-item').forEach((card) => {
       const img = card.querySelector('img');
@@ -14,6 +19,58 @@
   [portfolioGrid, portfolioMosaic].filter(Boolean).forEach((node) => {
     new MutationObserver(removeDuplicatePortfolioImages).observe(node, {childList: true, subtree: true});
   });
+
+  const escapeText = (value) => String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+
+  const setupRotatingMosaic = () => {
+    if (!portfolioMosaic || portfolioMosaic.dataset.rotationReady === 'true') return;
+    portfolioMosaic.dataset.rotationReady = 'true';
+
+    const getGalleryPool = () => {
+      const unique = new Map();
+      document.querySelectorAll('#portfolio-grid .portfolio-card').forEach((card) => {
+        if (card.hidden) return;
+        const img = card.querySelector('img');
+        const title = card.querySelector('figcaption strong')?.textContent?.trim() || img?.alt?.trim();
+        if (img?.getAttribute('src') && title && !img.src.includes('mousse-de-limao-conjunto.jpg')) {
+          unique.set(img.getAttribute('src'), {src:img.getAttribute('src'), title});
+        }
+      });
+      return [...unique.values()];
+    };
+
+    const shuffle = (items) => {
+      const copy = [...items];
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
+      }
+      return copy;
+    };
+
+    const renderRandomMosaic = () => {
+      const pool = getGalleryPool();
+      if (pool.length < 5) return;
+      const currentSources = new Set([...portfolioMosaic.querySelectorAll('img')].map((img) => img.getAttribute('src')));
+      let selection = shuffle(pool).slice(0, 5);
+      if (selection.every((item) => currentSources.has(item.src))) selection = shuffle(pool).slice(0, 5);
+
+      portfolioMosaic.classList.add('is-refreshing');
+      window.setTimeout(() => {
+        portfolioMosaic.innerHTML = selection.map((item) => `<figure class="mosaic-item"><img src="${item.src}" alt="${escapeText(item.title)}" loading="lazy"><span>${escapeText(item.title)}</span></figure>`).join('');
+        portfolioMosaic.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.closest('.mosaic-item')?.remove()));
+        requestAnimationFrame(() => portfolioMosaic.classList.remove('is-refreshing'));
+      }, 520);
+    };
+
+    window.setTimeout(renderRandomMosaic, 10000);
+    window.setInterval(renderRandomMosaic, 10000);
+  };
+
+  setupRotatingMosaic();
+  if (portfolioGrid) {
+    new MutationObserver(setupRotatingMosaic).observe(portfolioGrid, {childList:true, subtree:true});
+  }
 
   const pizzaGallery = document.querySelector('.pizza-gallery');
   if (!pizzaGallery) return;
@@ -37,7 +94,6 @@
     fullPizzaPortfolio[9]
   ];
 
-  const escapeText = (value) => String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
   const lightbox = document.querySelector('#gallery-lightbox');
   let pizzaLightboxActive = false;
   let pizzaLightboxIndex = 0;
