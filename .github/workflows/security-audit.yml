@@ -1,0 +1,88 @@
+name: Auditoria de segurança
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-security:
+    name: Verificações estáticas
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Verificar segredos conhecidos
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nEI \
+            -e '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' \
+            -e 'ghp_[A-Za-z0-9]{30,}' \
+            -e 'github_pat_[A-Za-z0-9_]{30,}' \
+            -- . \
+            ':!.github/workflows/security-audit.yml' \
+            ':!SECURITY.md'; then
+            echo 'Possível segredo encontrado no repositório.' >&2
+            exit 1
+          fi
+          echo 'Nenhum padrão de segredo conhecido encontrado.'
+
+      - name: Verificar CSP nas páginas HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          failed=0
+          while IFS= read -r -d '' file; do
+            if ! grep -q 'Content-Security-Policy' "$file"; then
+              echo "CSP ausente: $file" >&2
+              failed=1
+            fi
+          done < <(find . -maxdepth 1 -name '*.html' -print0)
+          test "$failed" -eq 0
+
+      - name: Bloquear padrões HTML perigosos
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RniE \
+            --include='*.html' \
+            -e 'javascript:[[:space:]]*' \
+            -e 'on(click|load|error|submit|mouseover|focus)[[:space:]]*=' \
+            .; then
+            echo 'Padrão HTML inseguro encontrado.' >&2
+            exit 1
+          fi
+          echo 'Nenhum handler inline ou javascript: encontrado.'
+
+      - name: Verificar links externos em nova aba
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          problems = []
+          for path in Path('.').glob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              for tag in re.findall(r'<a\b[^>]*target=["\']_blank["\'][^>]*>', text, flags=re.I):
+                  rel = re.search(r'rel=["\']([^"\']*)["\']', tag, flags=re.I)
+                  values = set(rel.group(1).lower().split()) if rel else set()
+                  if not {'noopener', 'noreferrer'}.issubset(values):
+                      problems.append(f'{path}: {tag[:180]}')
+          if problems:
+              print('Links target=_blank sem noopener noreferrer:')
+              print('\n'.join(problems))
+              raise SystemExit(1)
+          print('Links externos em nova aba estão protegidos.')
+          PY
