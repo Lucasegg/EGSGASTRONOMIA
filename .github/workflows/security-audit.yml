@@ -38,18 +38,57 @@ jobs:
           fi
           echo 'Nenhum padrão de segredo conhecido encontrado.'
 
-      - name: Verificar CSP nas páginas HTML
+      - name: Validar baseline CSP
         shell: bash
         run: |
           set -euo pipefail
-          failed=0
-          while IFS= read -r -d '' file; do
-            if ! grep -q 'Content-Security-Policy' "$file"; then
-              echo "CSP ausente: $file" >&2
-              failed=1
-            fi
-          done < <(find . -maxdepth 1 -name '*.html' -print0)
-          test "$failed" -eq 0
+          python3 - <<'PY'
+          from pathlib import Path
+          from html.parser import HTMLParser
+
+          required = {
+              "default-src": "'none'",
+              "object-src": "'none'",
+              "base-uri": "'none'",
+              "form-action": "'none'",
+              "frame-src": "'none'",
+          }
+
+          class CSPParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.csp = None
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower() != 'meta':
+                      return
+                  data = {k.lower(): v for k, v in attrs if k and v is not None}
+                  if data.get('http-equiv', '').lower() == 'content-security-policy':
+                      self.csp = data.get('content')
+
+          problems = []
+          for path in Path('.').glob('*.html'):
+              parser = CSPParser()
+              parser.feed(path.read_text(encoding='utf-8'))
+              if not parser.csp:
+                  problems.append(f'{path}: CSP ausente')
+                  continue
+              directives = {}
+              for raw in parser.csp.split(';'):
+                  parts = raw.strip().split()
+                  if parts:
+                      directives[parts[0].lower()] = set(parts[1:])
+              for directive, value in required.items():
+                  if value not in directives.get(directive, set()):
+                      problems.append(f'{path}: {directive} sem {value}')
+              tokens = {token for values in directives.values() for token in values}
+              if "'unsafe-inline'" in tokens or "'unsafe-eval'" in tokens:
+                  problems.append(f'{path}: CSP permite unsafe-inline/unsafe-eval')
+
+          if problems:
+              print('\n'.join(problems))
+              raise SystemExit(1)
+          print('Baseline CSP validado em todas as páginas HTML.')
+          PY
 
       - name: Bloquear padrões HTML perigosos
         shell: bash
@@ -85,4 +124,26 @@ jobs:
               print('\n'.join(problems))
               raise SystemExit(1)
           print('Links externos em nova aba estão protegidos.')
+          PY
+
+      - name: Validar formulários públicos
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          problems = []
+          for filename in ('index.html', 'fale-conosco.html'):
+              text = Path(filename).read_text(encoding='utf-8')
+              if 'class="honeypot"' not in text:
+                  problems.append(f'{filename}: honeypot ausente')
+              for field in ('nome', 'mensagem'):
+                  tag = re.search(rf'<(?:input|textarea)\b[^>]*id=["\']{field}["\'][^>]*>', text, re.I)
+                  if not tag or 'maxlength=' not in tag.group(0).lower():
+                      problems.append(f'{filename}: limite de tamanho ausente em {field}')
+          if problems:
+              print('\n'.join(problems))
+              raise SystemExit(1)
+          print('Controles mínimos dos formulários públicos validados.')
           PY
