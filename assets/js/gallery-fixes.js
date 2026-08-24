@@ -6,6 +6,38 @@
   backgroundCss.href = 'assets/css/gastronomic-background.css?v=20260730-3';
   document.head.appendChild(backgroundCss);
 
+  const budgetForm = document.querySelector('#orcamento-form');
+  if (budgetForm) {
+    const destination = 'cervejaedubieer@gmail.com';
+    const clean = (value, max) => String(value || '').replace(/[<>\u0000-\u001F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
+    const button = budgetForm.querySelector('button[type="submit"]');
+    if (button) button.textContent = 'Enviar orçamento por e-mail';
+
+    budgetForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const honeypot = budgetForm.querySelector('#website');
+      if (honeypot?.value) return;
+      const nome = clean(budgetForm.querySelector('#nome')?.value, 80);
+      const telefone = clean(budgetForm.querySelector('#telefone')?.value, 30);
+      const tipo = clean(budgetForm.querySelector('#evento')?.value, 60);
+      const detalhes = clean(budgetForm.querySelector('#mensagem')?.value, 600);
+      if (!nome || !telefone || !tipo) {
+        alert('Preencha nome, telefone e tipo de evento.');
+        return;
+      }
+      const subject = `EGS Gastronomia - Solicitação de orçamento - ${tipo}`;
+      const body = [
+        `Nome: ${nome}`,
+        `Telefone: ${telefone}`,
+        `Tipo de evento: ${tipo}`,
+        '',
+        detalhes ? `Detalhes: ${detalhes}` : 'Detalhes: não informados'
+      ].join('\n');
+      window.location.href = `mailto:${destination}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }, true);
+  }
+
   const removeDuplicatePortfolioImages = () => {
     document.querySelectorAll('#portfolio-grid .portfolio-card, #portfolio-mosaic .mosaic-item').forEach((card) => {
       const img = card.querySelector('img');
