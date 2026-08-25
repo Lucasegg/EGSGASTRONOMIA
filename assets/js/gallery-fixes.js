@@ -8,33 +8,57 @@
 
   const budgetForm = document.querySelector('#orcamento-form');
   if (budgetForm) {
-    const destination = 'cervejaedubieer@gmail.com';
+    const endpoint = 'https://script.google.com/macros/s/AKfycbyiX1dJEU-NnfMCIV7TtMbJz6yFYdMjIvPchO8SB_MCKfecMWSxHsmJpz5T8a2xv1Or/exec';
     const clean = (value, max) => String(value || '').replace(/[<>\u0000-\u001F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
     const button = budgetForm.querySelector('button[type="submit"]');
-    if (button) button.textContent = 'Enviar orçamento por e-mail';
+    let status = budgetForm.querySelector('.form-status');
+    if (!status) {
+      status = document.createElement('p');
+      status.className = 'form-status';
+      status.setAttribute('aria-live', 'polite');
+      budgetForm.appendChild(status);
+    }
+    if (button) button.textContent = 'Enviar orçamento';
 
-    budgetForm.addEventListener('submit', (event) => {
+    budgetForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       event.stopImmediatePropagation();
       const honeypot = budgetForm.querySelector('#website');
       if (honeypot?.value) return;
+
       const nome = clean(budgetForm.querySelector('#nome')?.value, 80);
       const telefone = clean(budgetForm.querySelector('#telefone')?.value, 30);
       const tipo = clean(budgetForm.querySelector('#evento')?.value, 60);
       const detalhes = clean(budgetForm.querySelector('#mensagem')?.value, 600);
       if (!nome || !telefone || !tipo) {
-        alert('Preencha nome, telefone e tipo de evento.');
+        status.textContent = 'Preencha nome, telefone e tipo de evento.';
         return;
       }
-      const subject = `EGS Gastronomia - Solicitação de orçamento - ${tipo}`;
-      const body = [
-        `Nome: ${nome}`,
-        `Telefone: ${telefone}`,
-        `Tipo de evento: ${tipo}`,
-        '',
-        detalhes ? `Detalhes: ${detalhes}` : 'Detalhes: não informados'
-      ].join('\n');
-      window.location.href = `mailto:${destination}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Enviando...';
+      }
+      status.textContent = 'Enviando sua solicitação...';
+
+      try {
+        await fetch(endpoint, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {'Content-Type': 'text/plain;charset=utf-8'},
+          body: JSON.stringify({type: 'orcamento', website: '', nome, telefone, evento: tipo, mensagem: detalhes || 'Detalhes não informados'})
+        });
+        budgetForm.reset();
+        status.textContent = 'Solicitação enviada com sucesso. Em breve entraremos em contato.';
+      } catch (error) {
+        console.error('Falha ao enviar solicitação de orçamento', error);
+        status.textContent = 'Não foi possível enviar agora. Tente novamente em instantes ou use o botão do WhatsApp.';
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Enviar orçamento';
+        }
+      }
     }, true);
   }
 
