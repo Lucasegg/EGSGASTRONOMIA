@@ -105,21 +105,25 @@ jobs:
           print('Controles mínimos dos formulários públicos validados.')
           PY
 
-      - name: Garantir roteamento dos formulários por e-mail
+      - name: Garantir envio direto dos formulários
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          destination='cervejaedubieer@gmail.com'
+          endpoint='https://script.google.com/macros/s/AKfycbyiX1dJEU-NnfMCIV7TtMbJz6yFYdMjIvPchO8SB_MCKfecMWSxHsmJpz5T8a2xv1Or/exec'
           contact=Path('assets/js/contact.js').read_text(encoding='utf-8')
           fixes=Path('assets/js/gallery-fixes.js').read_text(encoding='utf-8')
           index=Path('index.html').read_text(encoding='utf-8')
+          fale=Path('fale-conosco.html').read_text(encoding='utf-8')
           problems=[]
-          if destination not in contact: problems.append('Fale Conosco não aponta para o e-mail oficial')
-          if destination not in fixes: problems.append('Orçamento não aponta para o e-mail oficial')
+          if endpoint not in contact: problems.append('Fale Conosco não usa o endpoint oficial')
+          if endpoint not in fixes: problems.append('Orçamento não usa o endpoint oficial')
+          if 'mailto:' in contact or 'mailto:' in fixes: problems.append('Ainda existe mailto nos handlers dos formulários')
           if 'stopImmediatePropagation' not in fixes: problems.append('Orçamento não bloqueia handler legado antes do envio')
+          if 'script.google.com' not in index or 'script.googleusercontent.com' not in index: problems.append('CSP da página inicial não libera o endpoint')
+          if 'script.google.com' not in fale or 'script.googleusercontent.com' not in fale: problems.append('CSP do Fale Conosco não libera o endpoint')
           if 'href="https://wa.me/5511943599302"' not in index: problems.append('Botão oficial do WhatsApp ausente')
           if problems: print('\n'.join(problems)); raise SystemExit(1)
-          print('Fale Conosco e Orçamento protegidos para envio ao e-mail oficial; WhatsApp preservado nos botões.')
+          print('Formulários usam endpoint direto; mailto removido; WhatsApp preservado separadamente.')
           PY
