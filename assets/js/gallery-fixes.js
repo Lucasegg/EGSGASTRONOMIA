@@ -6,8 +6,15 @@
   backgroundCss.href = 'assets/css/gastronomic-background.css?v=20260730-3';
   document.head.appendChild(backgroundCss);
 
-  const budgetForm = document.querySelector('#orcamento-form');
+  let budgetForm = document.querySelector('#orcamento-form');
   if (budgetForm) {
+    // app.js ainda registra um handler legado no formulário. Clonar o nó
+    // preserva o HTML/estilos, mas remove listeners antigos antes de instalar
+    // o único handler oficial de envio direto por e-mail.
+    const freshBudgetForm = budgetForm.cloneNode(true);
+    budgetForm.replaceWith(freshBudgetForm);
+    budgetForm = freshBudgetForm;
+
     const endpoint = 'https://script.google.com/macros/s/AKfycbyiX1dJEU-NnfMCIV7TtMbJz6yFYdMjIvPchO8SB_MCKfecMWSxHsmJpz5T8a2xv1Or/exec';
     const clean = (value, max) => String(value || '').replace(/[<>\u0000-\u001F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
     const button = budgetForm.querySelector('button[type="submit"]');
